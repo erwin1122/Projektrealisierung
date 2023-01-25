@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "7rFojEFDNme9n5fItHZrbwO7+tkwxooOSocRT+laEPc=",
+  "Source": "StationLocator",
+  "BasePath": "_content/StationLocator",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
