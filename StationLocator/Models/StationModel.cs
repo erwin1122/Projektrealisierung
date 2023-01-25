@@ -7,5 +7,6 @@
         public string? latitude { get; set; }
         public string? location { get; set; }
         public string? asl { get; set; }
+        public string? distance { get; set; }
     }
 }
