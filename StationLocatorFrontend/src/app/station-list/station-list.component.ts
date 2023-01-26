@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { GlobalState } from 'src/models/globalState';
 import { Station } from 'src/models/station';
+import { TempValue } from 'src/models/tempValue';
 import * as Actions from '../../state/state.actions';
 
 @Component({
@@ -21,6 +22,6 @@ export class StationListComponent implements OnInit {
   ngOnInit(): void {}
 
   updateSelectedStation() {
-    Actions.updateCurrentStation();
+    this.store.dispatch(Actions.updateCurrentStation(this.selectedStation));
   }
 }

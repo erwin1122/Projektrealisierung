@@ -23,6 +23,12 @@ app.Lifetime.ApplicationStarted.Register(() =>
     FileHandler.DownloadStationInventory();
 });
 
+app.UseCors(builder => {
+    builder.AllowAnyHeader();
+    builder.AllowAnyOrigin();
+    builder.AllowAnyMethod();
+});
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

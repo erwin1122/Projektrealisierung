@@ -8,7 +8,7 @@ namespace StationLocator
     public class FileHandler
     {
         private static string _stationFolder = Path.GetRelativePath(Directory.GetCurrentDirectory(), "Files/Stations/");
-        public static async void DownloadStationById(string id)
+        public static async Task<bool> DownloadStationById(string id)
         {
             if (!CheckStationFileAlreadyOnSystem(id))
             {
@@ -21,13 +21,14 @@ namespace StationLocator
                 using FileStream decompressedFile = File.Create(filePath);
                 using GZipStream decompressionStream = new GZipStream(content, CompressionMode.Decompress);
                 decompressionStream.CopyTo(decompressedFile);
-            }            
+                return true;
+            }
+            return false;
         }
 
         private static bool CheckStationFileAlreadyOnSystem(string id)
         {
             string[] files = Directory.GetFiles(_stationFolder);
-            var test = Path.GetFileName(files[0]);
             var filesToDelete = files.Where(f => !Path.GetFileName(f).EndsWith($"{DateTime.Now.ToString("yyyy-MM-dd")}.csv"));
 
             foreach ( var file in filesToDelete)

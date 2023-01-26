@@ -5,12 +5,13 @@
     optionLabel="location"
   >
     <ng-template let-station pTemplate="item">
-      <div class="country-item">
+      <div>
         <div>{{ station.location }}</div>
         <div>{{ station.id }}</div>
         <div>{{ station.longitude }}</div>
         <div>{{ station.latitude }}</div>
         <div>{{ station.asl }}</div>
+        <div>{{ station.distance }}</div>
       </div>
     </ng-template>
   </p-listbox>

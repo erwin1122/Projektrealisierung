@@ -1,6 +1,10 @@
 import { Station } from './station';
+import { TempValue } from './tempValue';
 
 export interface AppState {
-  currentStation: Station;
+  currentFocus: {
+    Station: Station,
+    values: TempValue[]
+  }
   stationsNearby: Station[];
 }

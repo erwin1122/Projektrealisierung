@@ -1,12 +1,15 @@
-﻿namespace StationLocator.Models
+﻿using CsvHelper.Configuration.Attributes;
+
+namespace StationLocator.Models
 {
     public class TempValue
     {
-        public string? year { get; set; }
-        public string? month { get; set; }
-        public string? day { get; set; }
-        public string? minTemp { get; set; }
-        public string? maxTemp { get; set; }
-        public string? meanTemp { get; set; }
+        public int? year { get; set; }
+        public int? month { get; set; }
+        public int? day { get; set; }
+        public float? minTemp { get; set; }
+        public float? maxTemp { get; set; }
+        public string? scope { get; set; }
+        public string? _type { get; set; }
     }
 }
