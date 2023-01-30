@@ -3,8 +3,13 @@ import { AppState } from 'src/models/appState';
 import * as Actions from './state.actions';
 
 export const initialState: AppState = {
+  technical: {
+    isLoading: false
+  },
   currentFocus: {
-    Station: {},
+    station: {
+      id: "AGE00147708"
+    },
     values: [
       {
         year: 2003,
@@ -103,6 +108,25 @@ export const initialState: AppState = {
         scope: 'month',
       },
     ],
+    chartData: {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      datasets: [
+          {
+              label: 'First Dataset',
+              data: [65, 59, 80, 81, 56, 55, 40],
+              fill: false,
+              borderColor: '#42A5F5',
+              tension: .4
+          },
+          {
+              label: 'Second Dataset',
+              data: [28, 48, 40, 19, 86, 27, 90],
+              fill: false,
+              borderColor: '#FFA726',
+              tension: .4
+          }
+      ]
+  }
   },
   stationsNearby: [
     {
@@ -149,8 +173,12 @@ export const stateReducer = createReducer(
     ...state,
     currentFocus: {
       ...state.currentFocus,
-      Station: selectedStation,
+      station: selectedStation,
     },
+    technical: {
+      ...state.technical,
+      isLoading: true
+    }
   })),
   on(Actions.loadTempValuesSuccess, (state: AppState, data) => ({
     ...state,
@@ -158,5 +186,9 @@ export const stateReducer = createReducer(
       ...state.currentFocus,
       values: data.values,
     },
+    technical: {
+      ...state.technical,
+      isLoading: false
+    }
   }))
 );
