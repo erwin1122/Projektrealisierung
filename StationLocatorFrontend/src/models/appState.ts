@@ -1,10 +1,15 @@
+import { ChartData } from './chartData';
 import { Station } from './station';
 import { TempValue } from './tempValue';
 
 export interface AppState {
   currentFocus: {
-    Station: Station,
-    values: TempValue[]
+    station: Station,
+    values: TempValue[],
+    chartData: ChartData
   }
-  stationsNearby: Station[];
+  stationsNearby: Station[],
+  technical: {
+    isLoading: boolean
+  }
 }
