@@ -38,18 +38,18 @@ namespace StationLocator.Controllers
         }
 
         [HttpGet("/{id}/year")]
-        public StationResponse GetYear(string id, [FromQuery] int year)
+        public async Task<StationResponse> GetYear(string id, [FromQuery] int year)
         {
-            _ = FileHandler.DownloadStationById(id);
+            await FileHandler.DownloadStationById(id);
             List<TempValue> tempValues = CsvHandler.GetStationValuesById(id).Where(value => value.year == year).ToList();
 
             return new StationResponse { station = new Station() { id = id }, values = CsvHandler.GetMeanTemp(tempValues, "month") };
         }
 
         [HttpGet("/{id}/month")]
-        public StationResponse GetMonth(string id, [FromQuery] int year, [FromQuery] int month)
+        public async Task<StationResponse> GetMonth(string id, [FromQuery] int year, [FromQuery] int month)
         {
-            _ = FileHandler.DownloadStationById(id);
+            await FileHandler.DownloadStationById(id);
             List<TempValue> tempValues = CsvHandler.GetStationValuesById(id).Where(value => value.year == year && value.month == month).ToList();
 
             List<TempValue> filteredValues = new List<TempValue>();
