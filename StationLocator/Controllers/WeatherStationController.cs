@@ -15,6 +15,7 @@ namespace StationLocator.Controllers
         public List<Station> Get([FromQuery] float longitude, [FromQuery] float latitude, [FromQuery] string country = "", [FromQuery] int years = -1, [FromQuery] int radius = -1, [FromQuery] int count = 1)
         {
             List<string> stationIds = CsvHandler.FindStations(longitude, latitude, country, years, radius, count);
+
             List<Station> stations = new List<Station>();
 
             //foreach(string stationId in stationIds)

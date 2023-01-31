@@ -1,4 +1,58 @@
-<div>
-    <div>°C</div>
-    <p-chart type="line" [data]="chartData" [options]="basicOptions" (onDataSelect)="selectData($event)"></p-chart>
+<div style="display: grid; grid-template-columns: 9fr 2.8fr 0.2fr;">
+  <div>
+    <p-card>
+      <div>°C</div>
+      <p-chart
+        type="line"
+        height="70vh"
+        [data]="chartData"
+        [options]="basicOptions"
+        (onDataSelect)="selectData($event)"
+      ></p-chart>
+    </p-card>
+  </div>
+  <div style="padding-left: 40px">
+    <p-card
+      header="{{ currentStation?.id }}"
+      [style]="{ 'margin-bottom': '2em' }"
+    >
+      <p>Lorem ipsum</p>
+    </p-card>
+    <p-card
+      header="{{ currentStation?.id }}"
+      [style]="{ 'margin-bottom': '2em' }"
+    >
+      <p>Lorem ipsum</p>
+    </p-card>
+    <p-card
+      header="{{ currentStation?.id }}"
+      [style]="{ 'margin-bottom': '2em' }"
+    >
+      <p>Lorem ipsum</p>
+    </p-card>
+  </div>
+  <div style="padding-left: 15px; display: flex">
+    <div
+      style="
+        justify-content: center;
+        height: 100%;
+        align-items: center;
+        display: flex;
+        font-weight: bolder;
+        font-size: 20pt;
+        cursor: pointer;
+        padding-right: 8px;
+        color: rgb(100, 116, 139);
+      "
+    >
+      <p *ngIf="showSidebar" (click)="toggleSidebar()">-</p>
+      <p *ngIf="!showSidebar" (click)="toggleSidebar()">+</p>
+    </div>
+    <div
+      style="background-color: rgb(100, 116, 139); height: 100%; width: 1px"
+    ></div>
+    <div class="sidebar" [ngClass]="{ open: showSidebar }">
+      <app-station-list></app-station-list>
+    </div>
+  </div>
 </div>

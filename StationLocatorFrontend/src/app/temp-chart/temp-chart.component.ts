@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { ChartData } from 'src/models/chartData';
 import { GlobalState } from 'src/models/globalState';
+import { Station } from 'src/models/station';
 import { StationResponse } from 'src/models/stationResponse';
 import { TempValue } from 'src/models/tempValue';
 import { ApiService } from 'src/services/api-service.service';
@@ -14,9 +16,16 @@ import { ApiService } from 'src/services/api-service.service';
 export class TempChartComponent implements OnInit {
   apiData: StationResponse = { station: {}, values: [] };
   chartData: ChartData = {};
+
+  currentStation: Station | undefined;
   currentStationId: string | undefined;
   currentScope: string = '';
+
+  showSidebar: boolean = false;
+
   basicOptions: any = {
+    responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         labels: {
@@ -56,6 +65,14 @@ export class TempChartComponent implements OnInit {
         this.currentStationId = id;
         this.getInitialData(this.currentStationId);
       });
+
+    this.store
+      .select((state) => state.state.currentFocus.station)
+      .subscribe((station) => (this.currentStation = station));
+  }
+
+  toggleSidebar(){
+    this.showSidebar = !this.showSidebar;
   }
 
   getInitialData(stationId: string | undefined) {
@@ -118,28 +135,28 @@ export class TempChartComponent implements OnInit {
       datasets: [
         {
           label: 'TMAX',
-          tension: 0,
+          tension: 0.2,
           borderColor: '#FF0000',
           fill: false,
           data: tMax,
         },
         {
           label: 'TMIN',
-          tension: 0,
+          tension: 0.2,
           borderColor: '#2E75B6',
           fill: false,
           data: tMin,
         },
         {
           label: 'TMAX S',
-          tension: 0,
+          tension: 0.2,
           borderColor: '#70AD47',
           fill: false,
           data: tMaxS,
         },
         {
           label: 'TMIN W',
-          tension: 0,
+          tension: 0.2,
           borderColor: '#ED7D31',
           fill: false,
           data: tMinW,
@@ -178,21 +195,21 @@ export class TempChartComponent implements OnInit {
       datasets: [
         {
           label: 'TMAX',
-          tension: 0,
+          tension: 0.2,
           borderColor: '#FF0000',
           fill: false,
           data: tMax,
         },
         {
           label: 'TMIN',
-          tension: 0,
+          tension: 0.2,
           borderColor: '#2E75B6',
           fill: false,
           data: tMin,
         },
         {
           label: 'TAVG',
-          tension: 0,
+          tension: 0.2,
           borderColor: '#A6A6A6',
           fill: false,
           data: tAvg,
@@ -217,14 +234,14 @@ export class TempChartComponent implements OnInit {
       datasets: [
         {
           label: 'TMAX',
-          tension: 0,
+          tension: 0.2,
           borderColor: '#FF0000',
           fill: false,
           data: tMax,
         },
         {
           label: 'TMIN',
-          tension: 0,
+          tension: 0.2,
           borderColor: '#2E75B6',
           fill: false,
           data: tMin,

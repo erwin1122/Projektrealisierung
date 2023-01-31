@@ -1,10 +1,35 @@
+html {
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  color: rgb(73, 80, 87);
+}
+
 body {
-  width: 75%;
+  width: 80%;
   margin: 0 auto;
 }
 
+.sidebar {
+  width: 0;
+  height: 100%;
+  transition: width 0.5s ease-out;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.sidebar.open {
+  width: 300px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.main-content {
+  flex: 1;
+  height: 100%;
+}
+
 .loading-container {
-  background-color: rgba(255, 255, 255, 0.719);
+  background-color: rgba(255, 255, 255, 0);
   position: absolute;
   top: 0;
   left: 0;

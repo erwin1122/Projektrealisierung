@@ -1,0 +1,8 @@
+<p-sidebar [(visible)]="display" position="right" styleClass="p-sidebar-sm">
+    <h3>test</h3>
+  <ng-template pTemplate="header">Header Content</ng-template>
+  <ng-template pTemplate="content">Body Content</ng-template>
+  <ng-template pTemplate="footer">Footer Content</ng-template>
+</p-sidebar>
+
+<p-button type="button" class="mr-2" (click)="toggleSidebar()" icon="pi pi-arrow-left"></p-button>
