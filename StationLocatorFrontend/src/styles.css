@@ -5,7 +5,7 @@ html {
 }
 
 body {
-  width: 80%;
+  max-width: 80%;
   margin: 0 auto;
 }
 
@@ -19,13 +19,15 @@ body {
 
 .sidebar.open {
   width: 300px;
-  margin-left: 20px;
-  margin-right: 20px;
 }
 
-.main-content {
-  flex: 1;
-  height: 100%;
+.container {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+}
+
+.container.openGrid {
+  grid-template-columns: 3fr 1fr 1fr;
 }
 
 .loading-container {

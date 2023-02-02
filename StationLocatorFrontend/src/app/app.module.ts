@@ -17,6 +17,9 @@ import { CardModule } from 'primeng/card';
 import {SidebarModule} from 'primeng/sidebar';
 // import {CommonModule} from 'primeng/';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {InputTextModule} from 'primeng/inputtext';
+import {CalendarModule} from 'primeng/calendar';
+
 
 import { AppComponent } from './main/app.component';
 import { StationListComponent } from './station-list/station-list.component';
@@ -57,6 +60,8 @@ import { SidebarComponent } from './sidebar/sidebar.component';
     TableModule,
     CardModule,
     SidebarModule,
+    InputTextModule,
+    CalendarModule,
     // CommonModule,
     BrowserAnimationsModule,
   ],

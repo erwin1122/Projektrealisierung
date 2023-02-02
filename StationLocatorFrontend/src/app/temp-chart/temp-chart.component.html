@@ -1,38 +1,69 @@
-<div style="display: grid; grid-template-columns: 9fr 2.8fr 0.2fr;">
-  <div>
-    <p-card>
-      <div>°C</div>
-      <p-chart
-        type="line"
-        height="70vh"
-        [data]="chartData"
-        [options]="basicOptions"
-        (onDataSelect)="selectData($event)"
-      ></p-chart>
-    </p-card>
-  </div>
+<div
+  style="display: grid; grid-template-columns: 9fr 3fr 0.1fr"
+  [ngClass]="{ openGrid: showSidebar }"
+>
+  <p-card>
+    <div>°C</div>
+    <p-chart
+      type="line"
+      height="70vh"
+      [data]="chartData"
+      [options]="basicOptions"
+      (onDataSelect)="selectData($event)"
+    ></p-chart>
+  </p-card>
   <div style="padding-left: 40px">
-    <p-card
-      header="{{ currentStation?.id }}"
-      [style]="{ 'margin-bottom': '2em' }"
-    >
-      <p>Lorem ipsum</p>
+    <p-card header="Aktuelle Auswertung" [style]="{ 'margin-bottom': '2em' }">
+      <p style="font-weight: bold">{{ currentStation?.id }}</p>
+      <p>Geogr. Länge: {{ currentStation?.longitude }}</p>
+      <p>Geogr. Breite: {{ currentStation?.latitude }}</p>
+      <p *ngIf="currentScope == 'year'">
+        Zeitraum: {{ apiData.values[0] ? apiData.values[0].year : null }} -
+        {{
+          apiData.values[apiData.values.length - 1]
+            ? apiData.values[apiData.values.length - 1].year
+            : null
+        }}
+      </p>
+      <p></p>
     </p-card>
     <p-card
-      header="{{ currentStation?.id }}"
+      *ngIf="currentScope == 'year'"
+      header="Zoom auf Jahr..."
       [style]="{ 'margin-bottom': '2em' }"
     >
-      <p>Lorem ipsum</p>
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input
+          id="yearSearch"
+          type="text"
+          pInputText
+          placeholder="Suche Jahr..."
+          [(ngModel)]="searchInput"
+          class="p-inputtext-sm"
+          (keydown.enter)="searchYear($event)"
+        />
+      </span>
     </p-card>
     <p-card
-      header="{{ currentStation?.id }}"
+      *ngIf="currentScope == 'month'"
+      header="Zoom auf Monat..."
       [style]="{ 'margin-bottom': '2em' }"
     >
-      <p>Lorem ipsum</p>
+      <p-calendar
+        [(ngModel)]="searchInput"
+        (ngModelChange)="searchMonth($event)"
+        view="month"
+        dateFormat="M"
+        [readonlyInput]="true"
+        class="p-inputtext-sm"
+        inputId="monthpicker"
+      ></p-calendar>
     </p-card>
   </div>
   <div style="padding-left: 15px; display: flex">
     <div
+      (click)="toggleSidebar()"
       style="
         justify-content: center;
         height: 100%;
@@ -45,8 +76,8 @@
         color: rgb(100, 116, 139);
       "
     >
-      <p *ngIf="showSidebar" (click)="toggleSidebar()">-</p>
-      <p *ngIf="!showSidebar" (click)="toggleSidebar()">+</p>
+      <p *ngIf="showSidebar">-</p>
+      <p *ngIf="!showSidebar">+</p>
     </div>
     <div
       style="background-color: rgb(100, 116, 139); height: 100%; width: 1px"

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
 import { ChartData } from 'src/models/chartData';
 import { GlobalState } from 'src/models/globalState';
 import { Station } from 'src/models/station';
@@ -16,6 +15,8 @@ import { ApiService } from 'src/services/api-service.service';
 export class TempChartComponent implements OnInit {
   apiData: StationResponse = { station: {}, values: [] };
   chartData: ChartData = {};
+
+  searchInput: any;
 
   currentStation: Station | undefined;
   currentStationId: string | undefined;
@@ -71,7 +72,34 @@ export class TempChartComponent implements OnInit {
       .subscribe((station) => (this.currentStation = station));
   }
 
-  toggleSidebar(){
+  searchYear(e: any) {
+    if (this.searchInput) {
+      var year: number = +this.searchInput;
+
+      this.apiService
+        .getYear(this.currentStationId, year)
+        .subscribe((data: any) => {
+          this.apiData = data;
+          this.currentScope = 'month';
+          this.extractData(data.values);
+        });
+    }
+  }
+
+  searchMonth(e: any) {
+    var month: number = this.searchInput.getMonth() + 1;
+    var year: number = this.apiData.values[0].year;
+
+    this.apiService
+      .getMonth(this.currentStationId, year, month)
+      .subscribe((data: any) => {
+        this.apiData = data;
+        this.currentScope = '';
+        this.extractData(data.values);
+      });
+  }
+
+  toggleSidebar() {
     this.showSidebar = !this.showSidebar;
   }
 
