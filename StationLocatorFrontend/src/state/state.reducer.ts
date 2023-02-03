@@ -73,5 +73,20 @@ export const stateReducer = createReducer(
       ...state.technical,
       isLoading: false,
     },
+  })),
+  on(Actions.searchForStations, (state: AppState, searchInput) => ({
+    ...state,
+    technical: {
+      ...state.technical,
+      isLoading: true,
+    },
+  })),
+  on(Actions.updateStationList, (state: AppState, data) => ({
+    ...state,
+    stationsNearby: [data],
+    technical: {
+      ...state.technical,
+      isLoading: false,
+    },
   }))
 );

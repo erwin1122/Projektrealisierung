@@ -14,12 +14,13 @@ import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { TableModule } from 'primeng/table';
 import { CardModule } from 'primeng/card';
-import {SidebarModule} from 'primeng/sidebar';
+import { SidebarModule } from 'primeng/sidebar';
 // import {CommonModule} from 'primeng/';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {InputTextModule} from 'primeng/inputtext';
-import {CalendarModule} from 'primeng/calendar';
-
+import { InputTextModule } from 'primeng/inputtext';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { CheckboxModule } from 'primeng/checkbox';
+import { CalendarModule } from 'primeng/calendar';
 
 import { AppComponent } from './main/app.component';
 import { StationListComponent } from './station-list/station-list.component';
@@ -30,6 +31,7 @@ import { TempChartComponent } from './temp-chart/temp-chart.component';
 import { LoadingComponent } from './loading/loading.component';
 import { SearchWindowComponent } from './search-window/search-window.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { SearchModalComponent } from './search-modal/search-modal.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +41,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
     LoadingComponent,
     SearchWindowComponent,
     SidebarComponent,
+    SearchModalComponent,
   ],
   imports: [
     BrowserModule,
@@ -62,6 +65,8 @@ import { SidebarComponent } from './sidebar/sidebar.component';
     SidebarModule,
     InputTextModule,
     CalendarModule,
+    InputNumberModule,
+    CheckboxModule,
     // CommonModule,
     BrowserAnimationsModule,
   ],

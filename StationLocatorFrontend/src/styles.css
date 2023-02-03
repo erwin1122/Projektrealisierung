@@ -9,6 +9,31 @@ body {
   margin: 0 auto;
 }
 
+p {
+  display: block;
+  margin-block-start: 0.3em;
+  margin-block-end: 0.3em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
+.p-datepicker .p-datepicker-header .p-datepicker-title .p-datepicker-year,
+.p-datepicker .p-datepicker-header .p-datepicker-title .p-datepicker-month {
+  color: white;
+}
+
+.p-card .p-card-body {
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+.p-card .p-card-content {
+  padding-top: 0.5em;
+  padding-bottom: 0.25em;
+}
+
 .sidebar {
   width: 0;
   height: 100%;

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ChartData } from 'src/models/chartData';
+import { DataLine } from 'src/models/dataLine';
 import { GlobalState } from 'src/models/globalState';
+import { Label } from 'src/models/label';
 import { Station } from 'src/models/station';
 import { StationResponse } from 'src/models/stationResponse';
 import { TempValue } from 'src/models/tempValue';
@@ -15,6 +17,87 @@ import { ApiService } from 'src/services/api-service.service';
 export class TempChartComponent implements OnInit {
   apiData: StationResponse = { station: {}, values: [] };
   chartData: ChartData = {};
+  months: string[] = [
+    'Januar',
+    'Februar',
+    'März',
+    'April',
+    'Mai',
+    'Juni',
+    'Juli',
+    'August',
+    'September',
+    'Oktober',
+    'November',
+    'Dezember',
+  ];
+  gesamtWerteCheckbox = true;
+  meteoWerteCheckbox = false;
+  basicCheckboxes: DataLine[] = [
+    {
+      label: Label.TMIN,
+      tension: 0.2,
+      borderColor: '#2E75B6',
+      fill: false,
+    },
+    {
+      label: Label.TMAX,
+      tension: 0.2,
+      borderColor: '#FF0000',
+      fill: false,
+    },
+  ];
+  meteoCheckboxes: DataLine[] = [
+    {
+      label: Label.TMINF,
+      tension: 0.2,
+      borderColor: '#FF99FF',
+      fill: false,
+    },
+    {
+      label: Label.TMAXF,
+      tension: 0.2,
+      borderColor: '#CC0099',
+      fill: false,
+    },
+    {
+      label: Label.TMINS,
+      tension: 0.2,
+      borderColor: '#A9D18E',
+      fill: false,
+    },
+    {
+      label: Label.TMAXS,
+      tension: 0.2,
+      borderColor: '#548235',
+      fill: false,
+    },
+    {
+      label: Label.TMINH,
+      tension: 0.2,
+      borderColor: '#FFC000',
+      fill: false,
+    },
+    {
+      label: Label.TMAXH,
+      tension: 0.2,
+      borderColor: '#ED7D31',
+      fill: false,
+    },
+    {
+      label: Label.TMINW,
+      tension: 0.2,
+      borderColor: '#66FFFF',
+      fill: false,
+    },
+    {
+      label: Label.TMAXW,
+      tension: 0.2,
+      borderColor: '#000099',
+      fill: false,
+    },
+  ];
+  selectedCategories: DataLine[] = [];
 
   searchInput: any;
 
@@ -60,6 +143,8 @@ export class TempChartComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.toggleGesamtwerte();
+
     this.store
       .select((state) => state.state.currentFocus.station.id)
       .subscribe((id) => {
@@ -70,6 +155,65 @@ export class TempChartComponent implements OnInit {
     this.store
       .select((state) => state.state.currentFocus.station)
       .subscribe((station) => (this.currentStation = station));
+  }
+
+  printCurrentSelection() {
+    console.log(this.gesamtWerteCheckbox);
+    console.log(this.selectedCategories);
+  }
+
+  toggleGesamtwerte() {
+    if (!this.gesamtWerteCheckbox) {
+      this.selectedCategories = this.selectedCategories.filter(
+        (x) => !this.basicCheckboxes.includes(x)
+      );
+    }
+
+    if (this.gesamtWerteCheckbox) {
+      this.basicCheckboxes.forEach((box) => {
+        this.selectedCategories = this.selectedCategories.filter((x) =>
+          this.selectedCategories.includes(x)
+        );
+        this.selectedCategories.push(box);
+      });
+    }
+  }
+
+  toggleMeteoWerte() {
+    if (!this.meteoWerteCheckbox) {
+      this.selectedCategories = this.selectedCategories.filter(
+        (x) => !this.meteoCheckboxes.includes(x)
+      );
+    }
+
+    if (this.meteoWerteCheckbox) {
+      this.meteoCheckboxes.forEach((box) => {
+        this.selectedCategories = this.selectedCategories.filter((x) =>
+          this.selectedCategories.includes(x)
+        );
+        this.selectedCategories.push(box);
+      });
+    }
+  }
+
+  getChartHeader() {
+    if (this.currentScope == 'year') {
+      return `Mittelwerte für Station ${this.currentStationId} | ${
+        this.apiData.values[0]?.year
+      } - ${this.apiData.values[this.apiData.values.length - 1]?.year}`;
+    }
+
+    if (this.currentScope == 'month') {
+      return `Monatliche Mittelwerte für Station ${this.currentStationId} | ${this.apiData.values[0]?.year}`;
+    }
+
+    if (this.currentScope == '') {
+      return `Werte für Station ${this.currentStationId} | ${
+        this.months[this.apiData.values[0]?.month - 1]
+      } ${this.apiData.values[0]?.year}`;
+    }
+
+    return '';
   }
 
   searchYear(e: any) {
@@ -148,75 +292,52 @@ export class TempChartComponent implements OnInit {
 
   extractYearScope(values: TempValue[]) {
     var labels: string[] = [];
-    var tMax: number[] = [];
-    var tMin: number[] = [];
-    var tMaxS: number[] = [];
-    var tMinW: number[] = [];
+    
+    var data: any[] = [
+      { label: Label.TMAX, values: new Array<number>() },
+      { label: Label.TMIN, values: new Array<number>() },
+      { label: Label.TMINF, values: new Array<number>() },
+      { label: Label.TMAXF, values: new Array<number>() },
+      { label: Label.TMINS, values: new Array<number>() },
+      { label: Label.TMAXS, values: new Array<number>() },
+      { label: Label.TMINH, values: new Array<number>() },
+      { label: Label.TMAXH, values: new Array<number>() },
+      { label: Label.TMINW, values: new Array<number>() },
+      { label: Label.TMAXW, values: new Array<number>() },
+    ];
+
+    this.chartData = {
+      datasets: this.selectedCategories,
+      labels: labels,
+    };
 
     values.forEach((value) => {
       labels.push(value.year.toString());
-      tMin.push(value.minTemp);
-      tMax.push(value.maxTemp);
+      data.find((x) => x.label == Label.TMAX).values.push(value.maxTemp);
+      data.find((x) => x.label == Label.TMIN).values.push(value.minTemp);
+      data.find((x) => x.label == Label.TMINF).values.push(value.minTemp);
+      data.find((x) => x.label == Label.TMAXF).values.push(value.minTemp);
+      data.find((x) => x.label == Label.TMINS).values.push(value.minTemp);
+      data.find((x) => x.label == Label.TMAXS).values.push(value.minTemp);
+      data.find((x) => x.label == Label.TMINH).values.push(value.minTemp);
+      data.find((x) => x.label == Label.TMAXH).values.push(value.minTemp);
+      data.find((x) => x.label == Label.TMINW).values.push(value.minTemp);
+      data.find((x) => x.label == Label.TMAXW).values.push(value.minTemp);
     });
 
-    this.chartData = {
-      datasets: [
-        {
-          label: 'TMAX',
-          tension: 0.2,
-          borderColor: '#FF0000',
-          fill: false,
-          data: tMax,
-        },
-        {
-          label: 'TMIN',
-          tension: 0.2,
-          borderColor: '#2E75B6',
-          fill: false,
-          data: tMin,
-        },
-        {
-          label: 'TMAX S',
-          tension: 0.2,
-          borderColor: '#70AD47',
-          fill: false,
-          data: tMaxS,
-        },
-        {
-          label: 'TMIN W',
-          tension: 0.2,
-          borderColor: '#ED7D31',
-          fill: false,
-          data: tMinW,
-        },
-      ],
-      labels: labels,
-    };
+    this.chartData.datasets?.forEach((dataSet) => {
+      dataSet.data = data.find((x) => x.label == dataSet.label).values;
+    });
   }
 
   extractMonthScope(values: TempValue[]) {
-    var labels: string[] = [
-      'Januar',
-      'Februar',
-      'März',
-      'April',
-      'Mai',
-      'Juni',
-      'Juli',
-      'August',
-      'September',
-      'Oktober',
-      'November',
-      'Dezember',
-    ];
-    var tMax: number[] = [];
-    var tMin: number[] = [];
-    var tAvg: number[] = [];
+    var labels: string[] = this.months;
+    var tMax: any[] = [];
+    var tMin: any[] = [];
 
     values.forEach((value) => {
       tMin.push(value.minTemp);
       tMax.push(value.maxTemp);
-      tAvg.push((value.minTemp + value.maxTemp) / 2);
     });
 
     this.chartData = {
@@ -234,13 +355,6 @@ export class TempChartComponent implements OnInit {
           borderColor: '#2E75B6',
           fill: false,
           data: tMin,
-        },
-        {
-          label: 'TAVG',
-          tension: 0.2,
-          borderColor: '#A6A6A6',
-          fill: false,
-          data: tAvg,
         },
       ],
       labels: labels,

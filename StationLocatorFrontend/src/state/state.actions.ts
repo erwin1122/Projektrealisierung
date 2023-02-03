@@ -1,6 +1,5 @@
 import { createAction, props } from '@ngrx/store';
 import { Station } from 'src/models/station';
-import { StationResponse } from 'src/models/stationResponse';
 
 export const updateCurrentStation = createAction(
   '[Station List] updateCurrentStation',
@@ -14,5 +13,15 @@ export const loadTempValuesSuccess = createAction(
 
 export const loadTempValuesFailure = createAction(
   '[Current Station] loadTempValuesFailure',
+  props<any>()
+);
+
+export const searchForStations = createAction(
+  '[Station List] search for Stations',
+  props<any>()
+);
+
+export const updateStationList = createAction(
+  '[Station List] update Station List',
   props<any>()
 );

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { DialogService } from 'primeng/dynamicdialog';
-import { StationListComponent } from '../station-list/station-list.component';
+import { SearchModalComponent } from '../search-modal/search-modal.component';
 
 @Component({
   selector: 'app-search-window',
@@ -13,6 +13,6 @@ export class SearchWindowComponent {
   constructor(public dialogService: DialogService) {}
 
   show() {
-    const ref = this.dialogService.open(StationListComponent, {});
+    const ref = this.dialogService.open(SearchModalComponent, {});
 }
 }
