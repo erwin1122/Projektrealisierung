@@ -13,7 +13,10 @@
     ></p-chart>
   </p-card>
   <div style="padding-left: 1em">
-    <p-card header="Aktuelle Auswertung" [style]="{ 'margin-bottom': '1em' }">
+    <p-card
+      header="Aktuelle Auswertung"
+      [style]="{ 'margin-bottom': '1em', background: '#F2F2F2' }"
+    >
       <p style="font-weight: bold">{{ currentStation?.id }}</p>
       <div style="display: grid; grid-template-columns: 1fr 1fr">
         <p>Geogr. Länge:</p>
@@ -44,7 +47,7 @@
     <p-card
       *ngIf="currentScope == 'year'"
       header="Zoom auf Jahr..."
-      [style]="{ 'margin-bottom': '1.2em' }"
+      [style]="{ 'margin-bottom': '1em', background: '#F2F2F2' }"
     >
       <span class="p-input-icon-left">
         <i class="pi pi-search"></i>
@@ -63,7 +66,7 @@
     <p-card
       *ngIf="currentScope == 'month'"
       header="Wähle anderes Jahr aus"
-      [style]="{ 'margin-bottom': '2em' }"
+      [style]="{ 'margin-bottom': '1em', background: '#F2F2F2' }"
     >
       <input
         id="yearSearch"
@@ -78,7 +81,7 @@
     <p-card
       *ngIf="currentScope == 'month'"
       header="Zoom auf Monat..."
-      [style]="{ 'margin-bottom': '2em' }"
+      [style]="{ 'margin-bottom': '1em', background: '#F2F2F2' }"
     >
       <p-calendar
         [(ngModel)]="searchInput"
@@ -94,7 +97,7 @@
     <p-card
       *ngIf="currentScope == ''"
       header="Wähle anderen Monat aus"
-      [style]="{ 'margin-bottom': '2em' }"
+      [style]="{ 'margin-bottom': '1em', background: '#F2F2F2' }"
     >
       <p-calendar
         [(ngModel)]="searchInput"
@@ -108,24 +111,25 @@
       ></p-calendar>
     </p-card>
 
-    <p-card>
+    <p-card [style]="{ 'margin-bottom': '1em', background: '#F2F2F2' }">
       <div style="padding-bottom: 15px">
-        <div style="padding-bottom: 5px;">
+        <div style="padding-bottom: 5px">
           <p-checkbox
-          name="group1"
-          [value]="gesamtWerteCheckbox"
-          (click)="toggleGesamtwerte()"
-          [(ngModel)]="gesamtWerteCheckbox"
-          [binary]="true"
-          inputId="gesamtwerte"
+            name="group1"
+            [value]="gesamtWerteCheckbox"
+            (click)="toggleGesamtwerte()"
+            [(ngModel)]="gesamtWerteCheckbox"
+            [binary]="true"
+            inputId="gesamtwerte"
           ></p-checkbox>
-          <label for="gesamtwerte" style="padding-left: 5px;">Gesamtwerte</label>
+          <label for="gesamtwerte" style="padding-left: 5px">Gesamtwerte</label>
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr">
           <div *ngFor="let checkbox of basicCheckboxes" class="field-checkbox">
             <p-checkbox
               name="group1"
               value="category"
+              (click)="extractData(apiData.values)"
               [value]="checkbox"
               [(ngModel)]="selectedCategories"
               [inputId]="checkbox.label"
@@ -160,6 +164,7 @@
               name="group2"
               value="category"
               [value]="checkbox"
+              (click)="extractData(apiData.values)"
               [(ngModel)]="selectedCategories"
               [inputId]="checkbox.label"
             ></p-checkbox>

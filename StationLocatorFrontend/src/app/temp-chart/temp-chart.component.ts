@@ -157,11 +157,6 @@ export class TempChartComponent implements OnInit {
       .subscribe((station) => (this.currentStation = station));
   }
 
-  printCurrentSelection() {
-    console.log(this.gesamtWerteCheckbox);
-    console.log(this.selectedCategories);
-  }
-
   toggleGesamtwerte() {
     if (!this.gesamtWerteCheckbox) {
       this.selectedCategories = this.selectedCategories.filter(
@@ -177,6 +172,8 @@ export class TempChartComponent implements OnInit {
         this.selectedCategories.push(box);
       });
     }
+
+    this.extractData(this.apiData.values);
   }
 
   toggleMeteoWerte() {
@@ -194,6 +191,8 @@ export class TempChartComponent implements OnInit {
         this.selectedCategories.push(box);
       });
     }
+
+    this.extractData(this.apiData.values);
   }
 
   getChartHeader() {
@@ -251,20 +250,8 @@ export class TempChartComponent implements OnInit {
     this.apiService.getInitialStationData(stationId)?.subscribe((data: any) => {
       this.apiData = data;
       this.currentScope = 'year';
-      this.extractData(data.values);
+      this.extractData(this.apiData.values);
     });
-  }
-
-  extractData(values: TempValue[]) {
-    if (this.currentScope == 'year') {
-      this.extractYearScope(values);
-    }
-    if (this.currentScope == 'month') {
-      this.extractMonthScope(values);
-    }
-    if (this.currentScope != 'month' && this.currentScope != 'year') {
-      this.extractDayScope(values);
-    }
   }
 
   selectData(e: any) {
@@ -276,7 +263,7 @@ export class TempChartComponent implements OnInit {
       this.apiService.getYear(stationId, year).subscribe((data: any) => {
         this.apiData = data;
         this.currentScope = 'month';
-        this.extractData(data.values);
+        this.extractData(this.apiData.values);
       });
     }
     if (this.currentScope == 'month') {
@@ -285,14 +272,30 @@ export class TempChartComponent implements OnInit {
         .subscribe((data: any) => {
           this.apiData = data;
           this.currentScope = '';
-          this.extractData(data.values);
+          this.extractData(this.apiData.values);
         });
     }
   }
 
-  extractYearScope(values: TempValue[]) {
+  extractData(values: TempValue[]) {
     var labels: string[] = [];
-    
+
+    if (this.currentScope == 'year') {
+      values.forEach((value) => {
+        labels.push(value.year.toString());
+      });
+    }
+
+    if (this.currentScope == 'month') {
+      labels = this.months;
+    }
+
+    if (this.currentScope == '') {
+      values.forEach((value) => {
+        labels.push(value.day.toString());
+      });
+    }
+
     var data: any[] = [
       { label: Label.TMAX, values: new Array<number>() },
       { label: Label.TMIN, values: new Array<number>() },
@@ -312,7 +315,6 @@ export class TempChartComponent implements OnInit {
     };
 
     values.forEach((value) => {
-      labels.push(value.year.toString());
       data.find((x) => x.label == Label.TMAX).values.push(value.maxTemp);
       data.find((x) => x.label == Label.TMIN).values.push(value.minTemp);
       data.find((x) => x.label == Label.TMINF).values.push(value.minTemp);
@@ -328,68 +330,5 @@ export class TempChartComponent implements OnInit {
     this.chartData.datasets?.forEach((dataSet) => {
       dataSet.data = data.find((x) => x.label == dataSet.label).values;
     });
-  }
-
-  extractMonthScope(values: TempValue[]) {
-    var labels: string[] = this.months;
-    var tMax: any[] = [];
-    var tMin: any[] = [];
-
-    values.forEach((value) => {
-      tMin.push(value.minTemp);
-      tMax.push(value.maxTemp);
-    });
-
-    this.chartData = {
-      datasets: [
-        {
-          label: 'TMAX',
-          tension: 0.2,
-          borderColor: '#FF0000',
-          fill: false,
-          data: tMax,
-        },
-        {
-          label: 'TMIN',
-          tension: 0.2,
-          borderColor: '#2E75B6',
-          fill: false,
-          data: tMin,
-        },
-      ],
-      labels: labels,
-    };
-  }
-
-  extractDayScope(values: TempValue[]) {
-    var labels: string[] = [];
-    var tMax: number[] = [];
-    var tMin: number[] = [];
-
-    values.forEach((value) => {
-      labels.push(value.day.toString());
-      tMin.push(value.minTemp);
-      tMax.push(value.maxTemp);
-    });
-
-    this.chartData = {
-      datasets: [
-        {
-          label: 'TMAX',
-          tension: 0.2,
-          borderColor: '#FF0000',
-          fill: false,
-          data: tMax,
-        },
-        {
-          label: 'TMIN',
-          tension: 0.2,
-          borderColor: '#2E75B6',
-          fill: false,
-          data: tMin,
-        },
-      ],
-      labels: labels,
-    };
   }
 }
