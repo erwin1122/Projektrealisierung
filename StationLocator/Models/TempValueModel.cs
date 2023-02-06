@@ -9,6 +9,8 @@ namespace StationLocator.Models
         public int? day { get; set; }
         public float? minTemp { get; set; }
         public float? maxTemp { get; set; }
+        public float? minTempF { get; set; }
+        public float? minTempS { get; set; }
         public string? scope { get; set; }
         public string? _type { get; set; }
     }
