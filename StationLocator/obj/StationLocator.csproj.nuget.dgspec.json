@@ -1,20 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\test\\source\\repos\\Projektrealisierung_Weather_App\\StationLocator\\StationLocator.csproj": {}
+    "C:\\Repos\\Studium\\Backend\\StationLocator\\StationLocator\\StationLocator.csproj": {}
   },
   "projects": {
-    "C:\\Users\\test\\source\\repos\\Projektrealisierung_Weather_App\\StationLocator\\StationLocator.csproj": {
+    "C:\\Repos\\Studium\\Backend\\StationLocator\\StationLocator\\StationLocator.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\test\\source\\repos\\Projektrealisierung_Weather_App\\StationLocator\\StationLocator.csproj",
+        "projectUniqueName": "C:\\Repos\\Studium\\Backend\\StationLocator\\StationLocator\\StationLocator.csproj",
         "projectName": "StationLocator",
-        "projectPath": "C:\\Users\\test\\source\\repos\\Projektrealisierung_Weather_App\\StationLocator\\StationLocator.csproj",
-        "packagesPath": "C:\\Users\\test\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\test\\source\\repos\\Projektrealisierung_Weather_App\\StationLocator\\obj\\",
+        "projectPath": "C:\\Repos\\Studium\\Backend\\StationLocator\\StationLocator\\StationLocator.csproj",
+        "packagesPath": "C:\\Users\\DH10HEM\\.nuget\\packages\\",
+        "outputPath": "C:\\Repos\\Studium\\Backend\\StationLocator\\StationLocator\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\test\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\DH10HEM\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,6 +25,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Users\\DH10HEM\\Downloads": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -43,6 +47,10 @@
             "CsvHelper": {
               "target": "Package",
               "version": "[30.0.1, )"
+            },
+            "Geolocation": {
+              "target": "Package",
+              "version": "[1.2.1, )"
             },
             "Microsoft.Data.Sqlite.Core": {
               "target": "Package",
