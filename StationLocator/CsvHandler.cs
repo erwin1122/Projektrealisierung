@@ -27,6 +27,17 @@ namespace StationLocator
             return new List<string>();
         }
 
+        public static Station GetStationById(string id)
+        {
+            using var reader = new StreamReader(Path.GetRelativePath(Directory.GetCurrentDirectory(), $"Files/ghcnd-stations.csv"));
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ",", HasHeaderRecord = false };
+            using var csv = new CsvReader(reader, config);
+            {
+                Station station = csv.GetRecords<Station>().Where(r => r.id == id).First();
+                return station;
+            }
+        }
+
         public static List<TempValue> GetMeanTempYears(List<TempValue> tempValues)
         {
             List<TempValue> filteredTemps = new List<TempValue>();
@@ -51,7 +62,6 @@ namespace StationLocator
                     scope = "years",
                     maxTemp = CalculateMeanTemp(values, "TMAX"),
                     minTemp = CalculateMeanTemp(values, "TMIN"),
-                    minTempF = CalculateMeanTempSeasons(values)
                 });
             }
             return filteredTemps;

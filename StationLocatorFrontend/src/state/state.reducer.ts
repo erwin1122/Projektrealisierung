@@ -1,15 +1,19 @@
 import { createReducer, on } from '@ngrx/store';
 import { AppState } from 'src/models/appState';
+import { Station } from 'src/models/station';
+import { StationResponse } from 'src/models/stationResponse';
 import * as Actions from './state.actions';
 
 export const initialState: AppState = {
   technical: {
     isLoading: false,
+    currentSearch: {}
   },
   currentFocus: {
     station: {
       id: 'AGE00147708',
     },
+    values: []
   },
   stationsNearby: [
     {
@@ -52,7 +56,7 @@ export const initialState: AppState = {
 
 export const stateReducer = createReducer(
   initialState,
-  on(Actions.updateCurrentStation, (state: AppState, selectedStation) => ({
+  on(Actions.updateCurrentStation, (state: AppState, selectedStation: Station) => ({
     ...state,
     currentFocus: {
       ...state.currentFocus,
@@ -63,12 +67,19 @@ export const stateReducer = createReducer(
       isLoading: true,
     },
   })),
-  on(Actions.loadTempValuesSuccess, (state: AppState, data) => ({
+  on(
+    Actions.loadTempValuesSuccess,
+    (state: AppState, data: StationResponse) => ({
+      ...state,
+      currentFocus: data,
+      technical: {
+        ...state.technical,
+        isLoading: false,
+      },
+    })
+  ),
+  on(Actions.loadTempValuesFailure, (state: AppState) => ({
     ...state,
-    currentFocus: {
-      ...state.currentFocus,
-      values: data.values,
-    },
     technical: {
       ...state.technical,
       isLoading: false,
@@ -83,7 +94,7 @@ export const stateReducer = createReducer(
   })),
   on(Actions.updateStationList, (state: AppState, data) => ({
     ...state,
-    stationsNearby: [data],
+    stationsNearby: data,
     technical: {
       ...state.technical,
       isLoading: false,

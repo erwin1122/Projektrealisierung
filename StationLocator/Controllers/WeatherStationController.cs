@@ -34,7 +34,7 @@ namespace StationLocator.Controllers
             await FileHandler.DownloadStationById(id);
             List<TempValue> tempValues = CsvHandler.GetStationValuesById(id).Where(value => value.year >= startYear && value.year <= endYear).ToList();
             
-            return new StationResponse { station = new Station() { id = id }, values = CsvHandler.GetMeanTempYears(tempValues) };
+            return new StationResponse { station = CsvHandler.GetStationById(id), values = CsvHandler.GetMeanTempYears(tempValues) };
         }
 
         [HttpGet("/{id}/year")]

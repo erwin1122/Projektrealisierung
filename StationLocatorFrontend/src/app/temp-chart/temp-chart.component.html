@@ -17,7 +17,7 @@
       header="Aktuelle Auswertung"
       [style]="{ 'margin-bottom': '1em', background: '#F2F2F2' }"
     >
-      <p style="font-weight: bold">{{ currentStation?.id }}</p>
+      <p style="font-weight: bold">{{ currentStation?.location }}</p>
       <div style="display: grid; grid-template-columns: 1fr 1fr">
         <p>Geogr. Länge:</p>
         <p>{{ currentStation?.longitude }}</p>
@@ -35,7 +35,7 @@
         <p *ngIf="currentScope == 'month'">
           {{ apiData.values[0] ? apiData.values[0].year : null }}
         </p>
-        <p *ngIf="currentScope == ''">
+        <p *ngIf="currentScope == 'days'">
           {{
             apiData.values[0] ? months[this.apiData.values[0].month - 1] : null
           }}
@@ -95,7 +95,7 @@
       ></p-calendar>
     </p-card>
     <p-card
-      *ngIf="currentScope == ''"
+      *ngIf="currentScope == 'days'"
       header="Wähle anderen Monat aus"
       [style]="{ 'margin-bottom': '1em', background: '#F2F2F2' }"
     >

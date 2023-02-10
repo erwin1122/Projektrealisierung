@@ -6,13 +6,12 @@ import { SearchModalComponent } from '../search-modal/search-modal.component';
   selector: 'app-search-window',
   templateUrl: './search-window.component.html',
   styleUrls: ['./search-window.component.css'],
-  providers: [DialogService]
+  providers: [DialogService],
 })
 export class SearchWindowComponent {
-
   constructor(public dialogService: DialogService) {}
 
   show() {
     const ref = this.dialogService.open(SearchModalComponent, {});
-}
+  }
 }
