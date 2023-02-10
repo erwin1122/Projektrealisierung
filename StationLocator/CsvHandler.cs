@@ -84,69 +84,73 @@ namespace StationLocator
 
         public static List<TempValue> GetMeanTemp(List<TempValue> tempValues, string scope)
         {
-            if(scope == "year")
+            using var reader = new StreamReader(Path.GetRelativePath(Directory.GetCurrentDirectory(), $"Files/ghcnd-stations.csv"));
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ",", HasHeaderRecord = false };
+            using var csv = new CsvReader(reader, config);
             {
-                List<TempValue> filteredTemps = new List<TempValue>();
-
-                IEnumerable<IGrouping<int?, TempValue>> yearGrouping = tempValues.OrderBy(value => value.year).GroupBy(value => value.year);
-
-                foreach(IGrouping<int?, TempValue> year in yearGrouping){
-
-                    List<TempValue> values = new List<TempValue>();
-
-                    foreach(TempValue tempValue in year)
-                    {
-                        values.Add(tempValue);
-                    }
-
-                    filteredTemps.Add(new TempValue()
-                    {
-                        year = year.Key,
-                        month = 0,
-                        day = 0,
-                        scope = scope,
-                        maxTemp = CalculateMeanTemp(values, "TMAX"),
-                        minTemp = CalculateMeanTemp(values, "TMIN")
-                    });
-                }
-
-                return filteredTemps;
+                Station station = csv.GetRecords<Station>().Where(r => r.id == id).First();
+                return station;
             }
+        }
 
-            if(scope == "month")
+        public static List<TempValue> GetMeanTempYears(List<TempValue> tempValues)
+        {
+            List<TempValue> filteredTemps = new List<TempValue>();
+
+            IEnumerable<IGrouping<int?, TempValue>> yearGrouping = tempValues.OrderBy(value => value.year).GroupBy(value => value.year);
+
+            foreach (IGrouping<int?, TempValue> year in yearGrouping)
             {
-                List<TempValue> filteredTemps = new List<TempValue>();
 
-                IEnumerable<IGrouping<int?, TempValue>> monthGrouping = tempValues.OrderBy(value => value.month).GroupBy(value => value.month);
+                List<TempValue> values = new List<TempValue>();
 
-                foreach (IGrouping<int?, TempValue> month in monthGrouping)
+                foreach (TempValue tempValue in year)
                 {
-
-                    List<TempValue> values = new List<TempValue>();
-
-                    foreach (TempValue tempValue in month)
-                    {
-                        values.Add(tempValue);
-                    }
-
-                    TempValue test = new TempValue()
-                    {
-                        year = values[0].year,
-                        month = month.Key,
-                        day = 0,
-                        scope = scope,
-                        maxTemp = CalculateMeanTemp(values, "TMAX"),
-                        minTemp = CalculateMeanTemp(values, "TMIN")
-                    };
-
-                    filteredTemps.Add(test);
+                    values.Add(tempValue);
                 }
 
-                return filteredTemps;
+                filteredTemps.Add(new TempValue()
+                {
+                    year = year.Key,
+                    month = 0,
+                    day = 0,
+                    scope = "years",
+                    maxTemp = CalculateMeanTemp(values, "TMAX"),
+                    minTemp = CalculateMeanTemp(values, "TMIN"),
+                });
+            }
+            return filteredTemps;
+        }
 
+        public static List<TempValue> GetMeanTempMonths(List<TempValue> tempValues) { 
+            List<TempValue> filteredTemps = new List<TempValue>();
+
+            IEnumerable<IGrouping<int?, TempValue>> monthGrouping = tempValues.OrderBy(value => value.month).GroupBy(value => value.month);
+
+            foreach (IGrouping<int?, TempValue> month in monthGrouping)
+            {
+
+                List<TempValue> values = new List<TempValue>();
+
+                foreach (TempValue tempValue in month)
+                {
+                    values.Add(tempValue);
+                }
+
+                TempValue test = new TempValue()
+                {
+                    year = values[0].year,
+                    month = month.Key,
+                    day = 0,
+                    scope = "months",
+                    maxTemp = CalculateMeanTemp(values, "TMAX"),
+                    minTemp = CalculateMeanTemp(values, "TMIN")
+                };
+
+                filteredTemps.Add(test);
             }
 
-            return new List<TempValue>();
+            return filteredTemps;
         }
 
         private static float? CalculateMeanTemp(List<TempValue> records, string type)

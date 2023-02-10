@@ -1,132 +1,19 @@
 import { createReducer, on } from '@ngrx/store';
 import { AppState } from 'src/models/appState';
+import { Station } from 'src/models/station';
+import { StationResponse } from 'src/models/stationResponse';
 import * as Actions from './state.actions';
 
 export const initialState: AppState = {
   technical: {
-    isLoading: false
+    isLoading: false,
+    currentSearch: {}
   },
   currentFocus: {
     station: {
-      id: "AGE00147708"
+      id: 'AGE00147708',
     },
-    values: [
-      {
-        year: 2003,
-        month: 1,
-        day: 0,
-        minTemp: 7.6333337,
-        maxTemp: 15.013333,
-        scope: 'month',
-      },
-      {
-        year: 2003,
-        month: 2,
-        day: 0,
-        minTemp: 5.2473683,
-        maxTemp: 13.83,
-        scope: 'month',
-      },
-      {
-        year: 2003,
-        month: 3,
-        day: 0,
-        minTemp: 9.012,
-        maxTemp: 19.814285,
-        scope: 'month',
-      },
-      {
-        year: 2003,
-        month: 4,
-        day: 0,
-        minTemp: 11.495652,
-        maxTemp: 21.813044,
-        scope: 'month',
-      },
-      {
-        year: 2003,
-        month: 5,
-        day: 0,
-        minTemp: 13.238889,
-        maxTemp: 25.900002,
-        scope: 'month',
-      },
-      {
-        year: 2003,
-        month: 6,
-        day: 0,
-        minTemp: 20.061111,
-        maxTemp: 35.50741,
-        scope: 'month',
-      },
-      {
-        year: 2003,
-        month: 7,
-        day: 0,
-        minTemp: 23.91154,
-        maxTemp: 37.75714,
-        scope: 'month',
-      },
-      {
-        year: 2003,
-        month: 8,
-        day: 0,
-        minTemp: 22.9625,
-        maxTemp: 37.75926,
-        scope: 'month',
-      },
-      {
-        year: 2003,
-        month: 9,
-        day: 0,
-        minTemp: 19.286364,
-        maxTemp: 30.65909,
-        scope: 'month',
-      },
-      {
-        year: 2003,
-        month: 10,
-        day: 0,
-        minTemp: 16.096153,
-        maxTemp: 26.851725,
-        scope: 'month',
-      },
-      {
-        year: 2003,
-        month: 11,
-        day: 0,
-        minTemp: 12.086364,
-        maxTemp: 20.976002,
-        scope: 'month',
-      },
-      {
-        year: 2003,
-        month: 12,
-        day: 0,
-        minTemp: 7.2727275,
-        maxTemp: 15.525001,
-        scope: 'month',
-      },
-    ],
-    chartData: {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [
-          {
-              label: 'First Dataset',
-              data: [65, 59, 80, 81, 56, 55, 40],
-              fill: false,
-              borderColor: '#42A5F5',
-              tension: .4
-          },
-          {
-              label: 'Second Dataset',
-              data: [28, 48, 40, 19, 86, 27, 90],
-              fill: false,
-              borderColor: '#FFA726',
-              tension: .4
-          }
-      ]
-  }
+    values: []
   },
   stationsNearby: [
     {
@@ -169,7 +56,7 @@ export const initialState: AppState = {
 
 export const stateReducer = createReducer(
   initialState,
-  on(Actions.updateCurrentStation, (state: AppState, selectedStation) => ({
+  on(Actions.updateCurrentStation, (state: AppState, selectedStation: Station) => ({
     ...state,
     currentFocus: {
       ...state.currentFocus,
@@ -177,18 +64,40 @@ export const stateReducer = createReducer(
     },
     technical: {
       ...state.technical,
-      isLoading: true
-    }
-  })),
-  on(Actions.loadTempValuesSuccess, (state: AppState, data) => ({
-    ...state,
-    currentFocus: {
-      ...state.currentFocus,
-      values: data.values,
+      isLoading: true,
     },
+  })),
+  on(
+    Actions.loadTempValuesSuccess,
+    (state: AppState, data: StationResponse) => ({
+      ...state,
+      currentFocus: data,
+      technical: {
+        ...state.technical,
+        isLoading: false,
+      },
+    })
+  ),
+  on(Actions.loadTempValuesFailure, (state: AppState) => ({
+    ...state,
     technical: {
       ...state.technical,
-      isLoading: false
-    }
+      isLoading: false,
+    },
+  })),
+  on(Actions.searchForStations, (state: AppState, searchInput) => ({
+    ...state,
+    technical: {
+      ...state.technical,
+      isLoading: true,
+    },
+  })),
+  on(Actions.updateStationList, (state: AppState, data) => ({
+    ...state,
+    stationsNearby: data,
+    technical: {
+      ...state.technical,
+      isLoading: false,
+    },
   }))
 );

@@ -3,7 +3,6 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { GlobalState } from 'src/models/globalState';
 import { Station } from 'src/models/station';
-import { ApiService } from 'src/services/api-service.service';
 import * as Actions from '../../state/state.actions';
 
 @Component({

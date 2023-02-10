@@ -9,7 +9,18 @@ import { FormsModule } from '@angular/forms';
 import { ListboxModule } from 'primeng/listbox';
 import { DropdownModule } from 'primeng/dropdown';
 import { ChartModule } from 'primeng/chart';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
+import { TableModule } from 'primeng/table';
+import { CardModule } from 'primeng/card';
+import { SidebarModule } from 'primeng/sidebar';
+// import {CommonModule} from 'primeng/';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { CheckboxModule } from 'primeng/checkbox';
+import { CalendarModule } from 'primeng/calendar';
 
 import { AppComponent } from './main/app.component';
 import { StationListComponent } from './station-list/station-list.component';
@@ -18,9 +29,20 @@ import { stateReducer } from 'src/state/state.reducer';
 import { StateEffects } from 'src/state/state.effects';
 import { TempChartComponent } from './temp-chart/temp-chart.component';
 import { LoadingComponent } from './loading/loading.component';
+import { SearchWindowComponent } from './search-window/search-window.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { SearchModalComponent } from './search-modal/search-modal.component';
 
 @NgModule({
-  declarations: [AppComponent, StationListComponent, TempChartComponent, LoadingComponent],
+  declarations: [
+    AppComponent,
+    StationListComponent,
+    TempChartComponent,
+    LoadingComponent,
+    SearchWindowComponent,
+    SidebarComponent,
+    SearchModalComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -35,7 +57,18 @@ import { LoadingComponent } from './loading/loading.component';
     ListboxModule,
     DropdownModule,
     ChartModule,
-    ProgressSpinnerModule,
+    DynamicDialogModule,
+    ButtonModule,
+    ToastModule,
+    TableModule,
+    CardModule,
+    SidebarModule,
+    InputTextModule,
+    CalendarModule,
+    InputNumberModule,
+    CheckboxModule,
+    // CommonModule,
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

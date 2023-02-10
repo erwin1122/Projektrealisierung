@@ -1,8 +1,9 @@
-<div style="width: 300px" (click)="updateSelectedStation()">
+<div (click)="updateSelectedStation()" style="display: flex; justify-content: center; align-items: flex-end; height: 100%; width: 100%">
   <p-listbox
     [options]="(stations$ | async)!"
     [(ngModel)]="selectedStation"
-    optionLabel="location"
+    optionLabel="id"
+    [listStyle]="{'max-height': '45rem', 'width': '260px'}"
   >
     <ng-template let-station pTemplate="item">
       <div>

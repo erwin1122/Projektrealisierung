@@ -1,4 +1,204 @@
-<div>
+<div
+  style="display: grid; grid-template-columns: 9fr 3fr 0.1fr"
+  [ngClass]="{ openGrid: showSidebar }"
+>
+  <p-card [header]="getChartHeader()">
     <div>°C</div>
-    <p-chart type="line" [data]="chartData" [options]="basicOptions" (onDataSelect)="selectData($event)"></p-chart>
+    <p-chart
+      type="line"
+      height="70vh"
+      [data]="chartData"
+      [options]="basicOptions"
+      (onDataSelect)="selectData($event)"
+    ></p-chart>
+  </p-card>
+  <div style="padding-left: 1em">
+    <p-card
+      header="Aktuelle Auswertung"
+      [style]="{ 'margin-bottom': '1em', background: '#F2F2F2' }"
+    >
+      <p style="font-weight: bold">{{ currentStation?.location }}</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr">
+        <p>Geogr. Länge:</p>
+        <p>{{ currentStation?.longitude }}</p>
+        <p>Geogr. Breite:</p>
+        <p>{{ currentStation?.latitude }}</p>
+        <p>Zeitraum:</p>
+        <p *ngIf="currentScope == 'year'">
+          {{ apiData.values[0] ? apiData.values[0].year : null }} -
+          {{
+            apiData.values[apiData.values.length - 1]
+              ? apiData.values[apiData.values.length - 1].year
+              : null
+          }}
+        </p>
+        <p *ngIf="currentScope == 'month'">
+          {{ apiData.values[0] ? apiData.values[0].year : null }}
+        </p>
+        <p *ngIf="currentScope == 'days'">
+          {{
+            apiData.values[0] ? months[this.apiData.values[0].month - 1] : null
+          }}
+          {{ apiData.values[0] ? apiData.values[0].year : null }}
+        </p>
+      </div>
+      <p></p>
+    </p-card>
+    <p-card
+      *ngIf="currentScope == 'year'"
+      header="Zoom auf Jahr..."
+      [style]="{ 'margin-bottom': '1em', background: '#F2F2F2' }"
+    >
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input
+          id="yearSearch"
+          type="text"
+          pInputText
+          placeholder="Suche Jahr..."
+          [(ngModel)]="searchInput"
+          class="p-inputtext-sm"
+          (keydown.enter)="searchYear($event)"
+        />
+      </span>
+      <p><i>*Oder auf Grafik anklicken</i></p>
+    </p-card>
+    <p-card
+      *ngIf="currentScope == 'month'"
+      header="Wähle anderes Jahr aus"
+      [style]="{ 'margin-bottom': '1em', background: '#F2F2F2' }"
+    >
+      <input
+        id="yearSearch"
+        type="text"
+        pInputText
+        placeholder="Jahr..."
+        [(ngModel)]="searchInput"
+        class="p-inputtext-sm"
+        (keydown.enter)="searchYear($event)"
+      />
+    </p-card>
+    <p-card
+      *ngIf="currentScope == 'month'"
+      header="Zoom auf Monat..."
+      [style]="{ 'margin-bottom': '1em', background: '#F2F2F2' }"
+    >
+      <p-calendar
+        [(ngModel)]="searchInput"
+        (ngModelChange)="searchMonth($event)"
+        view="month"
+        placeholder="Monat..."
+        dateFormat="M"
+        [readonlyInput]="true"
+        class="p-inputtext-sm"
+        inputId="monthpicker"
+      ></p-calendar>
+    </p-card>
+    <p-card
+      *ngIf="currentScope == 'days'"
+      header="Wähle anderen Monat aus"
+      [style]="{ 'margin-bottom': '1em', background: '#F2F2F2' }"
+    >
+      <p-calendar
+        [(ngModel)]="searchInput"
+        (ngModelChange)="searchMonth($event)"
+        view="month"
+        placeholder="Monat..."
+        dateFormat="M"
+        [readonlyInput]="true"
+        class="p-inputtext-sm"
+        inputId="monthpicker"
+      ></p-calendar>
+    </p-card>
+
+    <p-card [style]="{ 'margin-bottom': '1em', background: '#F2F2F2' }">
+      <div style="padding-bottom: 15px">
+        <div style="padding-bottom: 5px">
+          <p-checkbox
+            name="group1"
+            [value]="gesamtWerteCheckbox"
+            (click)="toggleGesamtwerte()"
+            [(ngModel)]="gesamtWerteCheckbox"
+            [binary]="true"
+            inputId="gesamtwerte"
+          ></p-checkbox>
+          <label for="gesamtwerte" style="padding-left: 5px">Gesamtwerte</label>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr">
+          <div *ngFor="let checkbox of basicCheckboxes" class="field-checkbox">
+            <p-checkbox
+              name="group1"
+              value="category"
+              (click)="extractData(apiData.values)"
+              [value]="checkbox"
+              [(ngModel)]="selectedCategories"
+              [inputId]="checkbox.label"
+            ></p-checkbox>
+            <label [for]="checkbox.label" style="padding-left: 5px">{{
+              checkbox.label
+            }}</label>
+          </div>
+        </div>
+      </div>
+      <ng-container *ngIf="currentScope == 'year'">
+        <div style="padding-bottom: 5px">
+          <p-checkbox
+            name="group1"
+            [value]="meteoWerteCheckbox"
+            (click)="toggleMeteoWerte()"
+            [(ngModel)]="meteoWerteCheckbox"
+            [binary]="true"
+            inputId="meteoWerte"
+          ></p-checkbox>
+          <label for="meteoWerte" style="padding-left: 5px"
+            >Meteorologische Werte</label
+          >
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr">
+          <div
+            *ngFor="let checkbox of meteoCheckboxes"
+            class="field-checkbox"
+            style="padding-bottom: 5px"
+          >
+            <p-checkbox
+              name="group2"
+              value="category"
+              [value]="checkbox"
+              (click)="extractData(apiData.values)"
+              [(ngModel)]="selectedCategories"
+              [inputId]="checkbox.label"
+            ></p-checkbox>
+            <label [for]="checkbox.label" style="padding-left: 5px">{{
+              checkbox.label
+            }}</label>
+          </div>
+        </div>
+      </ng-container>
+    </p-card>
+  </div>
+  <div style="padding-left: 15px; display: flex">
+    <div
+      (click)="toggleSidebar()"
+      style="
+        justify-content: center;
+        height: 100%;
+        align-items: center;
+        display: flex;
+        font-weight: bolder;
+        font-size: 20pt;
+        cursor: pointer;
+        padding-right: 8px;
+        color: rgb(100, 116, 139);
+      "
+    >
+      <p *ngIf="showSidebar">-</p>
+      <p *ngIf="!showSidebar">+</p>
+    </div>
+    <div
+      style="background-color: rgb(100, 116, 139); height: 100%; width: 1px"
+    ></div>
+    <div class="sidebar" [ngClass]="{ open: showSidebar }">
+      <app-station-list></app-station-list>
+    </div>
+  </div>
 </div>

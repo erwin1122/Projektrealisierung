@@ -1,0 +1,86 @@
+<div
+  style="display: grid; grid-template-columns: 1fr 1fr 1fr; max-width: 1000px"
+>
+  <div
+    style="
+      height: 100%;
+      padding-right: 20px;
+      margin-right: 20px;
+      border-right: 1px solid black;
+    "
+  >
+    <h2>Suchkriterien</h2>
+    <input
+      class="p-inputtext-sm"
+      [style]="{ 'padding-bottom': '10px' }"
+      type="text"
+      pInputText
+      placeholder="Geografische Länge"
+      [(ngModel)]="searchInput.longitude"
+    />
+    <input
+      class="p-inputtext-sm"
+      type="text"
+      pInputText
+      placeholder="Geografische Breite"
+      [(ngModel)]="searchInput.latitude"
+    />
+    <input
+      class="p-inputtext-sm"
+      type="text"
+      pInputText
+      placeholder="Land"
+      [(ngModel)]="searchInput.country"
+    />
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr">
+      <input
+        class="p-inputtext-sm"
+        type="text"
+        pInputText
+        placeholder="Jahr von"
+        [(ngModel)]="searchInput.startYear"
+      />
+      <pre>   -   </pre>
+      <input
+        class="p-inputtext-sm"
+        type="text"
+        pInputText
+        placeholder="Jahr bis"
+        [(ngModel)]="searchInput.endYear"
+      />
+    </div>
+
+    <p>Anpassung Anzahl anzuzeigender Stationen in der Nähe/Vorschläge:</p>
+    <div>
+      <label for="vertical" style="display: block">Vertical</label>
+      <p-inputNumber
+        [(ngModel)]="searchInput.count"
+        [showButtons]="true"
+        buttonLayout="vertical"
+        spinnerMode="vertical"
+        inputId="vertical"
+        decrementButtonClass="p-button-secondary"
+        incrementButtonClass="p-button-secondary"
+        incrementButtonIcon="pi pi-plus"
+        decrementButtonIcon="pi pi-minus"
+      >
+      </p-inputNumber>
+    </div>
+  </div>
+  <div
+    style="
+      height: 100%;
+      padding-right: 20px;
+      margin-right: 20px;
+      border-right: 1px solid black;
+    "
+  >
+    <h2>Stationen in der Nähe</h2>
+    <app-station-list></app-station-list>
+  </div>
+  <div>
+    <h2>Vorschläge</h2>
+    <div style="height: 80%; width: 100%; background-color: red"></div>
+    <!-- <recommendations></recommendations> -->
+  </div>
+</div>

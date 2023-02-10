@@ -1,10 +1,75 @@
+html {
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  color: rgb(73, 80, 87);
+}
+
 body {
-  width: 75%;
+  max-width: 80%;
   margin: 0 auto;
 }
 
+body::-webkit-scrollbar {
+  width: 0.2em;
+  background-color: #F5F5F5;
+}
+ 
+body::-webkit-scrollbar-thumb {
+  background-color: #000000;
+}
+ 
+body::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
+p {
+  display: block;
+  margin-block-start: 0.3em;
+  margin-block-end: 0.3em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
+.p-datepicker .p-datepicker-header .p-datepicker-title .p-datepicker-year,
+.p-datepicker .p-datepicker-header .p-datepicker-title .p-datepicker-month {
+  color: white;
+}
+
+.p-card .p-card-body {
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+.p-card .p-card-content {
+  padding-top: 0.5em;
+  padding-bottom: 0.25em;
+}
+
+.sidebar {
+  width: 0;
+  height: 100%;
+  transition: width 0.5s ease-out;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.sidebar.open {
+  width: 300px;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+}
+
+.container.openGrid {
+  grid-template-columns: 3fr 1fr 1fr;
+}
+
 .loading-container {
-  background-color: rgba(255, 255, 255, 0.719);
+  background-color: rgba(255, 255, 255, 0);
   position: absolute;
   top: 0;
   left: 0;

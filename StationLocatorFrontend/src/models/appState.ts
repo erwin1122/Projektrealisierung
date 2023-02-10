@@ -1,15 +1,18 @@
-import { ChartData } from './chartData';
 import { Station } from './station';
-import { TempValue } from './tempValue';
+import { StationResponse } from './stationResponse';
 
 export interface AppState {
-  currentFocus: {
-    station: Station,
-    values: TempValue[],
-    chartData: ChartData
-  }
-  stationsNearby: Station[],
   technical: {
-    isLoading: boolean
-  }
+    isLoading: boolean;
+    currentSearch: {
+      longitude?: number;
+      latitude?: number;
+      country?: string;
+      startYear?: number;
+      endYear?: number;
+      count?: number;
+    };
+  };
+  currentFocus: StationResponse;
+  stationsNearby: Station[];
 }
