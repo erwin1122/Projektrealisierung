@@ -11,11 +11,11 @@ import * as Actions from '../../state/state.actions';
   styleUrls: ['./station-list.component.css'],
 })
 export class StationListComponent implements OnInit {
-  stations$: Observable<Station[]>;
+  stations: Station[] = [];
   selectedStation: any;
 
   constructor(private store: Store<GlobalState>) {
-    this.stations$ = this.store.select((state) => state.state.stationsNearby);
+    this.store.select((state) => state.state.stationsNearby).subscribe(list => this.stations = list);
   }
 
   ngOnInit(): void {}

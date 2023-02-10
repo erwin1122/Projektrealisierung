@@ -1,19 +1,19 @@
 import { createReducer, on } from '@ngrx/store';
 import { AppState } from 'src/models/appState';
 import { Station } from 'src/models/station';
-import { StationResponse } from 'src/models/stationResponse';
+import { TempValue } from 'src/models/tempValue';
 import * as Actions from './state.actions';
 
 export const initialState: AppState = {
   technical: {
     isLoading: false,
-    currentSearch: {}
+    currentSearch: {},
   },
   currentFocus: {
     station: {
       id: 'AGE00147708',
     },
-    values: []
+    values: [],
   },
   stationsNearby: [
     {
@@ -56,28 +56,34 @@ export const initialState: AppState = {
 
 export const stateReducer = createReducer(
   initialState,
-  on(Actions.updateCurrentStation, (state: AppState, selectedStation: Station) => ({
-    ...state,
-    currentFocus: {
-      ...state.currentFocus,
-      station: selectedStation,
-    },
-    technical: {
-      ...state.technical,
-      isLoading: true,
-    },
-  })),
   on(
-    Actions.loadTempValuesSuccess,
-    (state: AppState, data: StationResponse) => ({
+    Actions.updateCurrentStation,
+    (state: AppState, selectedStation: Station) => ({
       ...state,
-      currentFocus: data,
+      currentFocus: {
+        ...state.currentFocus,
+        station: selectedStation,
+      },
+      technical: {
+        ...state.technical,
+        isLoading: true,
+      },
+    })
+  ),
+  on(Actions.loadTempValuesSuccess, (state: AppState, data) => {
+    console.log(data);
+    return {
+      ...state,
+      currentFocus: {
+        ...state.currentFocus,
+        values: data.values,
+      },
       technical: {
         ...state.technical,
         isLoading: false,
       },
-    })
-  ),
+    };
+  }),
   on(Actions.loadTempValuesFailure, (state: AppState) => ({
     ...state,
     technical: {
@@ -92,12 +98,15 @@ export const stateReducer = createReducer(
       isLoading: true,
     },
   })),
-  on(Actions.updateStationList, (state: AppState, data) => ({
-    ...state,
-    stationsNearby: data,
-    technical: {
-      ...state.technical,
-      isLoading: false,
-    },
-  }))
+  on(Actions.updateStationList, (state: AppState, data) => {
+    console.log(data);
+    return {
+      ...state,
+      stationsNearby: data.values,
+      technical: {
+        ...state.technical,
+        isLoading: false,
+      },
+    };
+  })
 );

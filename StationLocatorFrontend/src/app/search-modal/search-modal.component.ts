@@ -22,6 +22,6 @@ export class SearchModalComponent {
   constructor(private store: Store<GlobalState>) {}
 
   searchForStations() {
-    this.store.dispatch(Actions.searchForStations(this.searchInput));
+    this.store.dispatch(Actions.searchForStations(Object.fromEntries(Object.entries(this.searchInput).filter(([_, v]) => v != null))));
   }
 }

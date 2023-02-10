@@ -224,7 +224,7 @@ export class TempChartComponent implements OnInit {
       this.apiService
         .getYear(this.currentStation?.id, year)
         .subscribe((data: any) => {
-          this.apiData = data;
+          this.apiData.values = data.values;
           this.currentScope = Constants.MONTH;
           this.extractData(data.values);
         });
@@ -238,7 +238,7 @@ export class TempChartComponent implements OnInit {
     this.apiService
       .getMonth(this.currentStation?.id, year, month)
       .subscribe((data: any) => {
-        this.apiData = data;
+        this.apiData.values = data.values;
         this.currentScope = Constants.DAYS;
         this.extractData(data.values);
       });
@@ -250,7 +250,7 @@ export class TempChartComponent implements OnInit {
 
   getInitialData(stationId: string | undefined) {
     this.apiService.getInitialStationData(stationId)?.subscribe((data: any) => {
-      this.apiData = data;
+      this.apiData.values = data.values;
       this.currentScope = Constants.YEAR;
       this.extractData(this.apiData.values);
     });
@@ -263,7 +263,7 @@ export class TempChartComponent implements OnInit {
 
     if (this.currentScope == Constants.YEAR) {
       this.apiService.getYear(stationId, year).subscribe((data: any) => {
-        this.apiData = data;
+        this.apiData.values = data.values;
         this.currentScope = Constants.MONTH;
         this.extractData(this.apiData.values);
       });
@@ -272,7 +272,7 @@ export class TempChartComponent implements OnInit {
       this.apiService
         .getMonth(stationId, year, month)
         .subscribe((data: any) => {
-          this.apiData = data;
+          this.apiData.values = data.values;
           this.currentScope = Constants.DAYS;
           this.extractData(this.apiData.values);
         });

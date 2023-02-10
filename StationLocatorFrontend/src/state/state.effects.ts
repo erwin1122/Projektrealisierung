@@ -3,7 +3,6 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { StationResponse } from '../models/stationResponse';
 
 import * as StateActions from './state.actions';
 
@@ -38,10 +37,9 @@ export class StateEffects {
       ofType(StateActions.searchForStations),
       mergeMap((searchInput) =>
         this.http
-          .get(
-            this.baseURL +
-              `?longitude=${searchInput.longitude}&latitude=${searchInput.latitude}&country=${searchInput.country}&years=${searchInput.startYear}&radius=${searchInput.count}&count=${searchInput.radius}`
-          )
+          .get(this.baseURL + `WeatherStation`, {
+            params: searchInput,
+          })
           .pipe(
             map((data) => StateActions.updateStationList(data)),
             catchError((error) =>

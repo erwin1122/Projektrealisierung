@@ -11,31 +11,31 @@ namespace StationLocator.Controllers
     {
         // GET WeatherStation/
         [HttpGet]
-        public List<Station> Get([FromQuery] float longitude, [FromQuery] float latitude, [FromQuery] string? country, [FromQuery] int? years, [FromQuery] int? radius, [FromQuery] int count = 5)
+        public StationResponse Get([FromQuery] float longitude, [FromQuery] float latitude, [FromQuery] string? country, [FromQuery] int? years, [FromQuery] int? radius, [FromQuery] int count = 5)
         {
-            return CsvHandler.FindStations(longitude, latitude, country, years, radius, count);
+            return new StationResponse() { values = CsvHandler.FindStations(longitude, latitude, country, years, radius, count) };
         }
 
         [HttpGet("/{id}/range")]
-        public async Task<List<TempValue>> GetRange(string id, [FromQuery] int startYear, [FromQuery] int endYear)
+        public async Task<TempValueResponse> GetRange(string id, [FromQuery] int startYear, [FromQuery] int endYear)
         {
             await FileHandler.DownloadStationById(id);
             List<TempValue> tempValues = CsvHandler.GetStationValuesById(id).Where(value => value.year >= startYear && value.year <= endYear).ToList();
             
-            return CsvHandler.GetMeanTempYears(tempValues);
+            return new TempValueResponse() { values = CsvHandler.GetMeanTempYears(tempValues) };
         }
 
         [HttpGet("/{id}/year")]
-        public async Task<List<TempValue>> GetYear(string id, [FromQuery] int year)
+        public async Task<TempValueResponse> GetYear(string id, [FromQuery] int year)
         {
             await FileHandler.DownloadStationById(id);
             List<TempValue> tempValues = CsvHandler.GetStationValuesById(id).Where(value => value.year == year).ToList();
 
-            return CsvHandler.GetMeanTempMonths(tempValues);
+            return new TempValueResponse() { values = CsvHandler.GetMeanTempMonths(tempValues) };
         }
 
         [HttpGet("/{id}/month")]
-        public async Task<List<TempValue>> GetMonth(string id, [FromQuery] int year, [FromQuery] int month)
+        public async Task<TempValueResponse> GetMonth(string id, [FromQuery] int year, [FromQuery] int month)
         {
             await FileHandler.DownloadStationById(id);
             List<TempValue> tempValues = CsvHandler.GetStationValuesById(id).Where(value => value.year == year && value.month == month).ToList();
@@ -63,7 +63,7 @@ namespace StationLocator.Controllers
                 }
             }
 
-            return filteredValues;
+            return new TempValueResponse() { values = filteredValues };
         }
     }
 }
