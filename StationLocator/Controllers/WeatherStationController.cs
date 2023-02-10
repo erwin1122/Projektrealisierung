@@ -12,9 +12,9 @@ namespace StationLocator.Controllers
     {
         // GET WeatherStation/
         [HttpGet]
-        public List<Station> Get([FromQuery] float longitude, [FromQuery] float latitude, [FromQuery] string country = "", [FromQuery] int years = -1, [FromQuery] int radius = -1, [FromQuery] int count = 1)
+        public List<Station> Get([FromQuery] float longitude, [FromQuery] float latitude, [FromQuery] string? country, [FromQuery] int? years, [FromQuery] int? radius, [FromQuery] int? count)
         {
-            List<string> stationIds = CsvHandler.FindStations(longitude, latitude, country, years, radius, count);
+            List<Station> stationIds = CsvHandler.FindStations(longitude, latitude, country, years, radius, count);
             List<Station> stations = new List<Station>();
 
             //foreach(string stationId in stationIds)
@@ -24,7 +24,7 @@ namespace StationLocator.Controllers
 
             //CsvHandler.GetMeanTemp("AGE00147708", "2022");
 
-            return stations;
+            return stationIds;
         }
 
         [HttpGet("/{id}/range")]

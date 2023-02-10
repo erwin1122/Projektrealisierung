@@ -2,8 +2,10 @@
 using CsvHelper.Configuration;
 using StationLocator.Models;
 using System;
-using System.Diagnostics.Metrics;
+using System.Diagnostics;
 using System.Globalization;
+
+
 
 namespace StationLocator
 {
@@ -22,10 +24,63 @@ namespace StationLocator
             }
         }
 
-        public static List<string> FindStations(float longitude, float latitude, string country, int years, int radius, int count)
+        public static List<Station> FindStations(float longitude, float latitude, string? country, int? years, int? radius, int? count)
         {
-            return new List<string>();
+
+            using var reader = new StreamReader(Path.GetRelativePath(Directory.GetCurrentDirectory(), $"Files/ghcnd-stations.csv"));
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ",", HasHeaderRecord = false, BadDataFound = null, MissingFieldFound = null};
+            using var csv = new CsvReader(reader, config);
+
+            var records = csv.GetRecords<Station>().ToList();
+
+
+
+            // Berechne die Distanzen zu allen Stationen
+            foreach (Station station in records)
+            {
+                double distance = CalculateDistance(Convert.ToDouble(latitude), Convert.ToDouble(longitude), Convert.ToDouble(station.latitude), Convert.ToDouble(station.longitude));
+                station.distance = distance.ToString();
+            }
+
+            // Sortiere die Liste der Stationen nach Entfernung
+            records.Sort((x, y) => x.distance.CompareTo(y.distance));
+
+            // Gib die ersten 10 nächsten Stationen aus
+            List<Station> nearestStations = records.GetRange(0, 10);
+
+            // Ausgabe der nächsten Stationen
+            foreach (Station station in nearestStations)
+            {
+                Debug.WriteLine("Station: " + station.id + ", Entfernung: " + station.distance + " km");
+            }
+            
+
+            static double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
+            {
+                double R = 6371; // Earth radius in km
+                double dLat = ToRadians(lat2 - lat1);
+                double dLon = ToRadians(lon2 - lon1);
+                lat1 = ToRadians(lat1);
+                lat2 = ToRadians(lat2);
+
+                double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) + Math.Sin(dLon / 2) * Math.Sin(dLon / 2) * Math.Cos(lat1) * Math.Cos(lat2);
+                double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+                double d = R * c;
+
+                return d;
+            }
+
+            static double ToRadians(double angle)
+            {
+                return Math.PI * angle / 180.0;
+            }
+
+            return nearestStations;
         }
+
+
+
+    
 
         public static List<TempValue> GetMeanTemp(List<TempValue> tempValues, string scope)
         {
