@@ -3,6 +3,7 @@ export interface Station {
   longitude?: string;
   latitude?: string;
   location?: string;
+  country?: string;
   asl?: string;
   distance?: string;
 }

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
 import { GlobalState } from 'src/models/globalState';
 import { Station } from 'src/models/station';
 import * as Actions from '../../state/state.actions';
@@ -15,7 +14,9 @@ export class StationListComponent implements OnInit {
   selectedStation: any;
 
   constructor(private store: Store<GlobalState>) {
-    this.store.select((state) => state.state.stationsNearby).subscribe(list => this.stations = list);
+    this.store
+      .select((state) => state.state.stationsNearby)
+      .subscribe((list) => (this.stations = list));
   }
 
   ngOnInit(): void {}

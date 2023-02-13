@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { Constants } from 'src/models/constants';
 import { GlobalState } from 'src/models/globalState';
 import * as Actions from '../../state/state.actions';
 
@@ -16,12 +17,24 @@ export class SearchModalComponent {
     startYear: null,
     endYear: null,
     count: null,
-    radius: null
+    radius: null,
   };
 
-  constructor(private store: Store<GlobalState>) {}
+  countries: any[];
+  country: any;
+
+  constructor(private store: Store<GlobalState>) {
+    this.countries = Constants.COUNTRIES;
+  }
 
   searchForStations() {
-    this.store.dispatch(Actions.searchForStations(Object.fromEntries(Object.entries(this.searchInput).filter(([_, v]) => v != null))));
+    this.searchInput.country = this.country.country_code;
+    this.store.dispatch(
+      Actions.searchForStations(
+        Object.fromEntries(
+          Object.entries(this.searchInput).filter(([_, v]) => v != null)
+        )
+      )
+    );
   }
 }

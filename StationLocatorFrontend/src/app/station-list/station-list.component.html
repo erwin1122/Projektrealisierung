@@ -1,18 +1,35 @@
-<div (click)="updateSelectedStation()" style="display: flex; justify-content: center; align-items: flex-end; height: 100%; width: 100%">
+<div
+  (click)="updateSelectedStation()"
+  style="
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 100%;
+    width: 100%;
+  "
+>
   <p-listbox
     [options]="stations"
     [(ngModel)]="selectedStation"
     optionLabel="id"
-    [listStyle]="{'max-height': '45rem', 'width': '260px'}"
+    [listStyle]="{ 'max-height': '45rem', width: '270px' }"
   >
     <ng-template let-station pTemplate="item">
       <div>
-        <div>{{ station.location }}</div>
-        <div>{{ station.id }}</div>
-        <div>{{ station.longitude }}</div>
-        <div>{{ station.latitude }}</div>
-        <div>{{ station.asl }}</div>
-        <div>{{ station.distance }}</div>
+        <p style="font-weight: bold">
+          {{ station.location }}, {{ station.country }}
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 10px 1fr">
+          <p>Geogr. Länge:</p>
+          <p></p>
+          <p>{{ station?.longitude }}</p>
+          <p>Geogr. Breite:</p>
+          <p></p>
+          <p>{{ station?.latitude }}</p>
+          <p>Abstand:</p>
+          <p></p>
+          <p>{{ station?.distance | number : "1.1-1" }}km</p>
+        </div>
       </div>
     </ng-template>
   </p-listbox>

@@ -16,5 +16,7 @@ namespace StationLocator.Models
         public string? location { get; set; }
         [Ignore]
         public double? distance { get; set; }
+        [Ignore]
+        public string? country { get; set; }
     }
 }
