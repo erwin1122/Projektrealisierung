@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
   baseUrl: string = "https://localhost:44326/";
-  reload$ = new Subject<void>();
 
   constructor(private http: HttpClient) { }
 
@@ -25,9 +23,5 @@ export class ApiService {
 
   getMonth(stationId: string | undefined, year: number, month: number){
     return this.http.get(this.baseUrl + `${stationId}/month?year=${year}&month=${month}`);
-  }
-
-  reload() {
-    this.reload$.next();
   }
 }

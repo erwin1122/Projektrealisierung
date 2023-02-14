@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { AppState } from 'src/models/appState';
+import { Constants } from 'src/models/constants';
 import { Station } from 'src/models/station';
-import { TempValue } from 'src/models/tempValue';
 import * as Actions from './state.actions';
 
 export const initialState: AppState = {
@@ -10,48 +10,10 @@ export const initialState: AppState = {
     currentSearch: {},
   },
   currentFocus: {
-    station: {
-      id: 'AGE00147708',
-    },
+    station: {},
     values: [],
   },
-  stationsNearby: [
-    {
-      id: 'AGE00147708',
-      asl: '100',
-      latitude: '48.8288',
-      location: 'Deutschland',
-      longitude: '8.1923',
-    },
-    {
-      id: 'AEM00041194',
-      asl: '200',
-      latitude: '48.8288',
-      location: 'Deutschland',
-      longitude: '8.1923',
-    },
-    {
-      id: 'AGM00060518',
-      asl: '300',
-      latitude: '48.8288',
-      location: 'Deutschland',
-      longitude: '8.1923',
-    },
-    {
-      id: 'ASN00006050',
-      asl: '400',
-      latitude: '48.8288',
-      location: 'Deutschland',
-      longitude: '8.1923',
-    },
-    {
-      id: 'US1COMF0027',
-      asl: '500',
-      latitude: '48.8288',
-      location: 'Deutschland',
-      longitude: '8.1923',
-    },
-  ],
+  stationsNearby: [],
 };
 
 export const stateReducer = createReducer(
@@ -71,7 +33,6 @@ export const stateReducer = createReducer(
     })
   ),
   on(Actions.loadTempValuesSuccess, (state: AppState, data) => {
-    console.log(data);
     return {
       ...state,
       currentFocus: {
@@ -99,7 +60,6 @@ export const stateReducer = createReducer(
     },
   })),
   on(Actions.updateStationList, (state: AppState, data) => {
-    console.log(data);
     return {
       ...state,
       stationsNearby: data.values,

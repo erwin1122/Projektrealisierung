@@ -28,7 +28,10 @@ export class SearchModalComponent {
   }
 
   searchForStations() {
-    this.searchInput.country = this.country.country_code;
+    if (this.country != undefined) {
+      this.searchInput.country = this.country.country_code;
+    }
+
     this.store.dispatch(
       Actions.searchForStations(
         Object.fromEntries(

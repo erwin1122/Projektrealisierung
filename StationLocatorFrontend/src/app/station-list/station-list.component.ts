@@ -16,7 +16,9 @@ export class StationListComponent implements OnInit {
   constructor(private store: Store<GlobalState>) {
     this.store
       .select((state) => state.state.stationsNearby)
-      .subscribe((list) => (this.stations = list));
+      .subscribe((list) => {
+        this.stations = list;
+      });
   }
 
   ngOnInit(): void {}
