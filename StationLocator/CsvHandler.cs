@@ -22,7 +22,7 @@ namespace StationLocator
             }
         }
 
-        public static List<Station> FindStations(float longitude, float latitude, string? country, int? years, int? radius, int count)
+        public static List<Station> FindStations(float longitude, float latitude, string? country, int? start_year, int? end_year, int? radius, int count)
         {
             using var reader = new StreamReader(Path.GetRelativePath(Directory.GetCurrentDirectory(), $"Files/ghcnd-stations.csv"));
             var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ",", HasHeaderRecord = false, BadDataFound = null, MissingFieldFound = null};
@@ -30,16 +30,27 @@ namespace StationLocator
 
             var records = csv.GetRecords<Station>().ToList();
 
+            //länderfilter
+            var country_filtered_records = records.Where(records => records.id.StartsWith(country));
+
+
             // Berechne die Distanzen zu allen Stationen
-            foreach (Station station in records)
+            foreach (Station station in country_filtered_records)
             {
                 station.distance = CalculateDistance(Convert.ToDouble(latitude), Convert.ToDouble(longitude), Convert.ToDouble(station.latitude.Replace(".", ",")), Convert.ToDouble(station.longitude.Replace(".", ",")));
             }
 
             // Sortiere die Liste der Stationen nach Entfernung
-            records = records.OrderBy(r => r.distance).ToList();
+            records = country_filtered_records.OrderBy(r => r.distance).ToList();
 
-            return records.GetRange(0, count);
+            if (records.Count < count)
+            {
+                return records;
+            } else
+            {
+                return records.GetRange(0, count);
+            }
+            
         }
 
         private static double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
