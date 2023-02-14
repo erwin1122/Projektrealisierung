@@ -31,17 +31,21 @@ namespace StationLocator
             var records = csv.GetRecords<Station>().ToList();
 
             //länderfilter
-            var country_filtered_records = records.Where(records => records.id.StartsWith(country));
+            if (!String.IsNullOrEmpty(country))
+            {
+                records = records.Where(records => records.id.StartsWith(country)).ToList();
+            }
+            
 
 
             // Berechne die Distanzen zu allen Stationen
-            foreach (Station station in country_filtered_records)
+            foreach (Station station in records)
             {
                 station.distance = CalculateDistance(Convert.ToDouble(latitude), Convert.ToDouble(longitude), Convert.ToDouble(station.latitude.Replace(".", ",")), Convert.ToDouble(station.longitude.Replace(".", ",")));
             }
 
             // Sortiere die Liste der Stationen nach Entfernung
-            records = country_filtered_records.OrderBy(r => r.distance).ToList();
+            records = records.OrderBy(r => r.distance).ToList();
 
             if (records.Count < count)
             {
