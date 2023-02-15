@@ -7,9 +7,9 @@ namespace StationLocator.Models
         [Index(0)]
         public string? id { get; set; }
         [Index(1)]
-        public string? longitude { get; set; }
-        [Index(2)]
         public string? latitude { get; set; }
+        [Index(2)]
+        public string? longitude { get; set; }
         [Index(3)]
         public string? type { get; set; }
         [Index(4)]

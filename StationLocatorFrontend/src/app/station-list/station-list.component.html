@@ -20,12 +20,12 @@
           {{ station.location }}, {{ station.country }}
         </p>
         <div style="display: grid; grid-template-columns: 1fr 10px 1fr">
-          <p>Geogr. Länge:</p>
-          <p></p>
-          <p>{{ station?.longitude }}</p>
           <p>Geogr. Breite:</p>
           <p></p>
           <p>{{ station?.latitude }}</p>
+          <p>Geogr. Länge:</p>
+          <p></p>
+          <p>{{ station?.longitude }}</p>
           <p>Abstand:</p>
           <p></p>
           <p>{{ station?.distance | number : "1.1-1" }}km</p>

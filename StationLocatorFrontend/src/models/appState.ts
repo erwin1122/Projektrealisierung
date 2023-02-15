@@ -6,8 +6,8 @@ export interface AppState {
   technical: {
     isLoading: boolean;
     currentSearch: {
-      longitude?: number;
       latitude?: number;
+      longitude?: number;
       country?: string;
       startYear?: number;
       endYear?: number;

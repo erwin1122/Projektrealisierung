@@ -1,7 +1,7 @@
 export interface Station {
   id?: string;
-  longitude?: string;
   latitude?: string;
+  longitude?: string;
   location?: string;
   country?: string;
   asl?: string;

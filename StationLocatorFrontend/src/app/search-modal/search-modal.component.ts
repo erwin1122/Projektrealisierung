@@ -11,8 +11,8 @@ import * as Actions from '../../state/state.actions';
 })
 export class SearchModalComponent {
   searchInput = {
-    longitude: null,
     latitude: null,
+    longitude: null,
     country: null,
     startYear: null,
     endYear: null,

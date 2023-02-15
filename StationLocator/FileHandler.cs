@@ -9,6 +9,7 @@ namespace StationLocator
     public class FileHandler
     {
         private static string _stationFolder = Path.GetRelativePath(Directory.GetCurrentDirectory(), "Files/Stations/");
+
         public static async Task<bool> DownloadStationById(string id)
         {
             if (!CheckStationFileAlreadyOnSystem(id))

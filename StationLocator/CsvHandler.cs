@@ -22,7 +22,7 @@ namespace StationLocator
             }
         }
 
-        public static List<Station> FindStations(float longitude, float latitude, string? country, int? start_year, int? end_year, int? radius, int count)
+        public static List<Station> FindStations(float latitude, float longitude, string? country, int? start_year, int? end_year, int? radius, int count)
         {
             using var reader = new StreamReader(Path.GetRelativePath(Directory.GetCurrentDirectory(), $"Files/ghcnd-stations.csv"));
             var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ";;", HasHeaderRecord = false, BadDataFound = null, MissingFieldFound = null};
@@ -39,7 +39,7 @@ namespace StationLocator
             // Berechne die Distanzen zu allen Stationen
             foreach (Station station in stations)
             {
-                station.distance = CalculateDistance(Convert.ToDouble(latitude), Convert.ToDouble(longitude), Convert.ToDouble(station.latitude.Replace(".", ",")), Convert.ToDouble(station.longitude.Replace(".", ",")));
+                station.distance = CalculateDistance(Convert.ToDouble(longitude), Convert.ToDouble(latitude), Convert.ToDouble(station.longitude.Replace(".", ",")), Convert.ToDouble(station.latitude.Replace(".", ",")));
             }
 
             // Radiusfilter

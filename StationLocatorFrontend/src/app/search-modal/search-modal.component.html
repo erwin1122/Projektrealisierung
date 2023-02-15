@@ -10,18 +10,18 @@
     <h2>Suchkriterien</h2>
     <input
       class="p-inputtext-sm"
+      type="text"
+      pInputText
+      placeholder="Geografische Breite"
+      [(ngModel)]="searchInput.latitude"
+    />
+    <input
+      class="p-inputtext-sm"
       [style]="{ 'padding-bottom': '10px' }"
       type="text"
       pInputText
       placeholder="Geografische Länge"
       [(ngModel)]="searchInput.longitude"
-    />
-    <input
-      class="p-inputtext-sm"
-      type="text"
-      pInputText
-      placeholder="Geografische Breite"
-      [(ngModel)]="searchInput.latitude"
     />
     <p-dropdown
       [options]="countries"

@@ -19,10 +19,10 @@
     >
       <p style="font-weight: bold">{{ currentStation?.location }}</p>
       <div style="display: grid; grid-template-columns: 1fr 1fr">
-        <p>Geogr. Länge:</p>
-        <p>{{ currentStation?.longitude }}</p>
         <p>Geogr. Breite:</p>
         <p>{{ currentStation?.latitude }}</p>
+        <p>Geogr. Länge:</p>
+        <p>{{ currentStation?.longitude }}</p>
         <p>Zeitraum:</p>
         <p *ngIf="currentScope == 'year'">
           {{ apiData.values[0] ? apiData.values[0].year : null }} -
