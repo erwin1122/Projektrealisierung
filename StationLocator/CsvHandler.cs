@@ -28,33 +28,81 @@ namespace StationLocator
             var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ",", HasHeaderRecord = false, BadDataFound = null, MissingFieldFound = null};
             using var csv = new CsvReader(reader, config);
 
-            var records = csv.GetRecords<Station>().ToList();
+            var stations = csv.GetRecords<Station>().ToList();
 
-            //länderfilter
+            // Länderfilter
             if (!String.IsNullOrEmpty(country))
             {
-                records = records.Where(records => records.id.StartsWith(country)).ToList();
+                stations = stations.Where(station => station.id.StartsWith(country)).ToList();
             }
-            
-
 
             // Berechne die Distanzen zu allen Stationen
-            foreach (Station station in records)
+            foreach (Station station in stations)
             {
                 station.distance = CalculateDistance(Convert.ToDouble(latitude), Convert.ToDouble(longitude), Convert.ToDouble(station.latitude.Replace(".", ",")), Convert.ToDouble(station.longitude.Replace(".", ",")));
             }
 
-            // Sortiere die Liste der Stationen nach Entfernung
-            records = records.OrderBy(r => r.distance).ToList();
+            // Radiusfilter
+            if (radius != null)
+            {
+                stations = stations.Where(station => station.distance <= radius).ToList();
+            }
 
-            if (records.Count < count)
+            // Jahresfilter
+            if (start_year != null || end_year != null)
             {
-                return records;
-            } else
+                using var reader2 = new StreamReader(Path.GetRelativePath(Directory.GetCurrentDirectory(), $"Files/ghcnd-inventory.csv"));
+                var config2 = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ",", HasHeaderRecord = false, BadDataFound = null, MissingFieldFound = null };
+                using var csv2 = new CsvReader(reader2, config2);
+
+                var inventoryEntries = csv2.GetRecords<Inventory>().ToList();
+
+                stations = stations.Where(station => IsInDateRange(inventoryEntries, station, start_year, end_year)).ToList();
+            }
+
+            // Sortiere die Liste der Stationen nach Entfernung
+            stations = stations.OrderBy(r => r.distance).ToList();
+
+            if (stations.Count < count)
             {
-                return records.GetRange(0, count);
+                return stations;
             }
             
+            return stations.GetRange(0, count);            
+        }
+
+        private static bool IsInDateRange(List<Inventory> inventoryEntries, Station station, int? startYear, int? endYear)
+        {
+            Inventory inv = inventoryEntries.FirstOrDefault(inventory => inventory.id == station.id);
+
+            if(inv != null)
+            {
+                if (startYear != null && endYear != null)
+                { 
+                    if (inv.startYear <= startYear && inv.endYear >= endYear)
+                    {
+                        return true;
+                    }
+                }
+
+                if (startYear != null && endYear == null)
+                {
+                    if (inv.startYear <= startYear)
+                    {
+                        return true;
+                    }
+                }
+
+                if(startYear == null && endYear != null)
+                {
+                    if(inv.endYear >= endYear)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         private static double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
@@ -66,7 +114,7 @@ namespace StationLocator
 
             double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) + Math.Sin(dLon / 2) * Math.Sin(dLon / 2) * Math.Cos(lat1) * Math.Cos(lat2);
             double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-            double d = 6371 * c;
+            double d = 6378.137 * c;
 
             return d;
         }
