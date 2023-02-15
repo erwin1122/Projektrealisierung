@@ -10,6 +10,8 @@ export const initialState: AppState = {
     currentSearch: {},
   },
   currentFocus: {
+    startYear: 0,
+    endYear: 20000,
     station: {},
     values: [],
   },
@@ -66,6 +68,19 @@ export const stateReducer = createReducer(
       technical: {
         ...state.technical,
         isLoading: false,
+      },
+    };
+  }),
+  on(Actions.setDateRange, (state: AppState, data) => {
+    var startYear = data.startYear ? data.startYear : 0;
+    var endYear = data.endYear ? data.endYear : 20000;
+
+    return {
+      ...state,
+      currentFocus: {
+        ...state.currentFocus,
+        startYear: startYear,
+        endYear: endYear,
       },
     };
   })

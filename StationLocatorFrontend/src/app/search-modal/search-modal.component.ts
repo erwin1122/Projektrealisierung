@@ -39,5 +39,7 @@ export class SearchModalComponent {
         )
       )
     );
+
+    this.store.dispatch(Actions.setDateRange(this.searchInput));
   }
 }

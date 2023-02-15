@@ -11,9 +11,9 @@ namespace StationLocator.Controllers
     {
         // GET WeatherStation/
         [HttpGet]
-        public StationResponse Get([FromQuery] float longitude, [FromQuery] float latitude, [FromQuery] string? country, [FromQuery] int? start_year, [FromQuery] int? end_year, [FromQuery] int? radius, [FromQuery] int count = 5)
+        public StationResponse Get([FromQuery] float longitude, [FromQuery] float latitude, [FromQuery] string? country, [FromQuery] int? startYear, [FromQuery] int? endYear, [FromQuery] int? radius, [FromQuery] int count = 5)
         {
-            return new StationResponse() { values = CsvHandler.FindStations(longitude, latitude, country, start_year, end_year, radius, count) };
+            return new StationResponse() { values = CsvHandler.FindStations(longitude, latitude, country, startYear, endYear, radius, count) };
         }
 
         [HttpGet("/{id}/range")]

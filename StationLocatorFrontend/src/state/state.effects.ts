@@ -5,12 +5,28 @@ import { catchError, map, mergeMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 
 import * as StateActions from './state.actions';
+import { Store } from '@ngrx/store';
+import { GlobalState } from 'src/models/globalState';
 
 @Injectable()
 export class StateEffects {
   private baseURL = 'https://localhost:44326/';
 
-  constructor(private actions$: Actions, private http: HttpClient) {}
+  private startYear: number = 0;
+  private endYear: number = 20000;
+
+  constructor(
+    private actions$: Actions,
+    private http: HttpClient,
+    private store: Store<GlobalState>
+  ) {
+    this.store
+      .select((state) => state.state.currentFocus)
+      .subscribe((focus) => {
+        this.startYear = focus.startYear;
+        this.endYear = focus.endYear;
+      });
+  }
 
   loadCompleteData$ = createEffect(() =>
     this.actions$.pipe(
@@ -20,7 +36,7 @@ export class StateEffects {
           .get(
             this.baseURL +
               selectedStation.id +
-              '/range?startYear=0&endYear=2000000'
+              `/range?startYear=${this.startYear}&endYear=${this.endYear}`
           )
           .pipe(
             map((data) => StateActions.loadTempValuesSuccess(data)),

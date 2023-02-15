@@ -25,3 +25,8 @@ export const updateStationList = createAction(
   '[Station List] update Station List',
   props<any>()
 );
+
+export const setDateRange = createAction(
+  '[Station List] set Date Range',
+  props<any>()
+);

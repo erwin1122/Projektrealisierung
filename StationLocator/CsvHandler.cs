@@ -25,7 +25,7 @@ namespace StationLocator
         public static List<Station> FindStations(float longitude, float latitude, string? country, int? start_year, int? end_year, int? radius, int count)
         {
             using var reader = new StreamReader(Path.GetRelativePath(Directory.GetCurrentDirectory(), $"Files/ghcnd-stations.csv"));
-            var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ",", HasHeaderRecord = false, BadDataFound = null, MissingFieldFound = null};
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ";;", HasHeaderRecord = false, BadDataFound = null, MissingFieldFound = null};
             using var csv = new CsvReader(reader, config);
 
             var stations = csv.GetRecords<Station>().ToList();
@@ -51,13 +51,7 @@ namespace StationLocator
             // Jahresfilter
             if (start_year != null || end_year != null)
             {
-                using var reader2 = new StreamReader(Path.GetRelativePath(Directory.GetCurrentDirectory(), $"Files/ghcnd-inventory.csv"));
-                var config2 = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ",", HasHeaderRecord = false, BadDataFound = null, MissingFieldFound = null };
-                using var csv2 = new CsvReader(reader2, config2);
-
-                var inventoryEntries = csv2.GetRecords<Inventory>().ToList();
-
-                stations = stations.Where(station => IsInDateRange(inventoryEntries, station, start_year, end_year)).ToList();
+                stations = stations.Where(station => IsInDateRange(station, start_year, end_year)).ToList();
             }
 
             // Sortiere die Liste der Stationen nach Entfernung
@@ -71,34 +65,29 @@ namespace StationLocator
             return stations.GetRange(0, count);            
         }
 
-        private static bool IsInDateRange(List<Inventory> inventoryEntries, Station station, int? startYear, int? endYear)
+        private static bool IsInDateRange(Station station, int? startYear, int? endYear)
         {
-            Inventory inv = inventoryEntries.FirstOrDefault(inventory => inventory.id == station.id);
+            if (startYear != null && endYear != null)
+            { 
+                if (station.startYear <= startYear && station.endYear >= endYear)
+                {
+                    return true;
+                }
+            }
 
-            if(inv != null)
+            if (startYear != null && endYear == null)
             {
-                if (startYear != null && endYear != null)
-                { 
-                    if (inv.startYear <= startYear && inv.endYear >= endYear)
-                    {
-                        return true;
-                    }
-                }
-
-                if (startYear != null && endYear == null)
+                if (station.startYear <= startYear)
                 {
-                    if (inv.startYear <= startYear)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
+            }
 
-                if(startYear == null && endYear != null)
+            if(startYear == null && endYear != null)
+            {
+                if(station.endYear >= endYear)
                 {
-                    if(inv.endYear >= endYear)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
 
@@ -127,7 +116,7 @@ namespace StationLocator
         public static Station GetStationById(string id)
         {
             using var reader = new StreamReader(Path.GetRelativePath(Directory.GetCurrentDirectory(), $"Files/ghcnd-stations.csv"));
-            var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ",", HasHeaderRecord = false };
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ";;", HasHeaderRecord = false };
             using var csv = new CsvReader(reader, config);
             {
                 Station station = csv.GetRecords<Station>().Where(r => r.id == id).First();

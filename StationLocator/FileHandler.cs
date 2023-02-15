@@ -1,6 +1,7 @@
 ﻿using StationLocator.Models;
 using System.IO.Compression;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace StationLocator
@@ -44,11 +45,10 @@ namespace StationLocator
             using var client = new HttpClient();
             var response = await client.GetAsync("https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt");
             SaveFile(response, "ghcnd-stations.txt");
-            CleanUpStationsFile();
-
             var response2 = await client.GetAsync("https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-inventory.txt");
             SaveFile(response2, "ghcnd-inventory.txt");
-            CleanUpInventoryFile();
+
+            CleanUpStationsFile();
         }
 
         private static async void SaveFile(HttpResponseMessage response, string filename)
@@ -61,11 +61,23 @@ namespace StationLocator
 
         private static void CleanUpStationsFile()
         {
-            string file = Path.GetRelativePath(Directory.GetCurrentDirectory(), "Files/ghcnd-stations.txt");
-            string[] lines = File.ReadAllLines(file);
+            string stationPath = Path.GetRelativePath(Directory.GetCurrentDirectory(), "Files/ghcnd-stations.txt");
+            string[] stations = File.ReadAllLines(stationPath);
             List<string> cleanedLines = new List<string>();
 
-            foreach (string line in lines)
+            string inventoryPath = Path.GetRelativePath(Directory.GetCurrentDirectory(), "Files/ghcnd-inventory.txt");
+            List<string> inventories = File.ReadAllLines(inventoryPath).Where(line => line.Contains("TMAX")).ToList();
+
+            Dictionary<string, string> inventoryById = new Dictionary<string, string>();
+
+            foreach (string inventory in inventories)
+            {
+                string id = inventory.Split(" ")[0];
+
+                inventoryById[id] = inventory;
+            }
+
+            foreach (string line in stations)
             {
                 List<string> cleanStrings = new List<string>();
                 List<string> numbers = Regex.Matches(line, "[-+]?[0-9]+\\.[0-9]+").Cast<Match>().Select(match => match.Value).ToList();
@@ -76,29 +88,23 @@ namespace StationLocator
                 cleanStrings.Add(numbers[2]);
                 cleanStrings.Add(Regex.Match(line.Substring(line.LastIndexOf(".") + 5), @"((?!\s{2}).)+").Value.Trim());
 
-                cleanedLines.Add(string.Join(",", cleanStrings));
+                if(inventoryById.TryGetValue(line.Substring(0, 11), out string inventory))
+                {
+                    string[] years = Regex.Matches(inventory, "(\\d{4})\\s(\\d{4})").Cast<Match>().Select(match => match.Value).ToList()[0].Split(" ");
+                    cleanStrings.Add(years[0]);
+                    cleanStrings.Add(years[1]);
+                } else
+                {
+                    cleanStrings.Add(null);
+                    cleanStrings.Add(null);
+                }
+                
+                cleanedLines.Add(string.Join(";;", cleanStrings));
             }
 
             File.WriteAllLines(Path.GetRelativePath(Directory.GetCurrentDirectory(), "Files/ghcnd-stations.csv"), cleanedLines);
-            File.Delete(file);
-        }
-
-        private static void CleanUpInventoryFile()
-        {
-            string file = Path.GetRelativePath(Directory.GetCurrentDirectory(), "Files/ghcnd-inventory.txt");
-            string[] lines = File.ReadAllLines(file);
-            List<string> cleanedLines = new List<string>();
-
-            foreach (string line in lines)
-            {
-                if (line.Contains("TMAX") || line.Contains("TMIN"))
-                {
-                    cleanedLines.Add(string.Join(",", Regex.Matches(line, "((?!\\s).)+").Cast<Match>().Select(match => match.Value).ToList()));
-                }
-            }
-
-            File.WriteAllLines(Path.GetRelativePath(Directory.GetCurrentDirectory(), "Files/ghcnd-inventory.csv"), cleanedLines);
-            File.Delete(file);
+            File.Delete(stationPath);
+            File.Delete(inventoryPath);
         }
     }
 }

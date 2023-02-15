@@ -6,4 +6,6 @@ export interface Station {
   country?: string;
   asl?: string;
   distance?: string;
+  endYear?: number;
+  startYear?: number;
 }
