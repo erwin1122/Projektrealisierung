@@ -26,10 +26,10 @@ interface SearchInput {
   styleUrls: ['./search-modal.component.css'],
 })
 export class SearchModalComponent {
-  searchInput: SearchInput = {};
+  searchInput: SearchInput = { count: 5 };
 
   countries: Country[];
-  country: Country = {};
+  country!: Country;
 
   constructor(
     private store: Store<GlobalState>,
@@ -46,10 +46,6 @@ export class SearchModalComponent {
     if (this.country) {
       this.searchInput.country = this.country.country_code;
     }
-
-    console.log(this.countries);
-    console.log(this.country);
-    console.table(this.searchInput);
 
     this.store.dispatch(
       Actions.searchForStations(

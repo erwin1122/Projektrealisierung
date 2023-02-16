@@ -30,7 +30,7 @@ export class StartScreenComponent {
   }
 
   show() {
-    this.dialogService.open(SearchModalComponent, {header: "Suche"});
+    this.dialogService.open(SearchModalComponent, { header: 'Suche' });
     this.isVisible = false;
   }
 }

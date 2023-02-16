@@ -29,7 +29,6 @@ import { stateReducer } from 'src/state/state.reducer';
 import { StateEffects } from 'src/state/state.effects';
 import { TempChartComponent } from './temp-chart/temp-chart.component';
 import { LoadingComponent } from './loading/loading.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
 import { SearchModalComponent } from './search-modal/search-modal.component';
 import { StartScreenComponent } from './start-screen/start-screen.component';
 
@@ -39,7 +38,6 @@ import { StartScreenComponent } from './start-screen/start-screen.component';
     StationListComponent,
     TempChartComponent,
     LoadingComponent,
-    SidebarComponent,
     SearchModalComponent,
     StartScreenComponent,
   ],

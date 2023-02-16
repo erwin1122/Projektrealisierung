@@ -8,7 +8,7 @@ export const initialState: AppState = {
   technical: {
     isLoading: false,
     currentSearch: {},
-    scope: Constants.YEAR
+    scope: Constants.YEAR,
   },
   currentFocus: {
     startYear: 0,
@@ -90,8 +90,8 @@ export const stateReducer = createReducer(
       ...state,
       technical: {
         ...state.technical,
-        scope: data.scope
-      }
-    }
+        scope: data.scope,
+      },
+    };
   })
 );

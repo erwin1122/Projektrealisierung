@@ -21,12 +21,11 @@
       [(ngModel)]="searchInput.longitude"
     />
     <p-dropdown
-      style="width: 100%"
       [options]="countries"
       [(ngModel)]="country"
+      placeholder="Länderfilter"
       optionLabel="name"
       [showClear]="true"
-      placeholder="Länderfilter"
     ></p-dropdown>
     <div
       style="
@@ -55,9 +54,8 @@
     <p style="margin-bottom: 20px">
       Anpassung Anzahl anzuzeigender Stationen in der Nähe/Vorschläge:
     </p>
-    <div style="width: 100%;">
+    <div style="width: 100%">
       <p-inputNumber
-        style="float: left"
         [(ngModel)]="searchInput.count"
         mode="decimal"
         [showButtons]="true"
@@ -76,7 +74,6 @@
         class="p-button-outlined p-button-secondary"
       ></button>
     </div>
-    <!-- <button (click)="searchForStations()">Suche</button> -->
   </div>
   <div
     style="
@@ -90,7 +87,7 @@
   <div style="height: 100%; padding: 40px; padding-top: 20px">
     <h2 style="text-align: center">Stationen in der Nähe</h2>
     <app-station-list></app-station-list>
-    <!-- <button
+    <button
       (click)="closeModal()"
       pButton
       pRipple
@@ -98,6 +95,6 @@
       label="Bestätigen"
       class="p-button-outlined p-button-secondary"
       style="margin-top: 10px; float: right"
-    ></button> -->
+    ></button>
   </div>
 </div>

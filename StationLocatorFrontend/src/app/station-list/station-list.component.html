@@ -1,18 +1,16 @@
-<div
-  (click)="updateSelectedStation()"
->
+<div (click)="updateSelectedStation()">
   <p-listbox
     [options]="stations"
     [(ngModel)]="selectedStation"
     optionLabel="id"
-    [listStyle]="{ 'max-height': '400px'}"
+    [listStyle]="{ 'max-height': listHeight }"
   >
     <ng-template let-station pTemplate="item">
       <div>
         <p style="font-weight: bold">
           {{ station.location }}
         </p>
-        <div style="display: grid;">
+        <div style="display: grid">
           <p>{{ station?.distance | number : "1.1-1" }} km entfernt</p>
         </div>
       </div>
