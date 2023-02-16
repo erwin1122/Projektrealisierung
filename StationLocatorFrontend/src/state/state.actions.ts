@@ -30,3 +30,8 @@ export const setDateRange = createAction(
   '[Station List] set Date Range',
   props<any>()
 );
+
+export const setScope = createAction(
+  '[Technical] set Scope',
+  props<any>()
+)

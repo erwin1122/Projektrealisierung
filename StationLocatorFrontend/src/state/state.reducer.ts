@@ -1,5 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { AppState } from 'src/models/appState';
+import { Constants } from 'src/models/constants';
 import { Station } from 'src/models/station';
 import * as Actions from './state.actions';
 
@@ -7,6 +8,7 @@ export const initialState: AppState = {
   technical: {
     isLoading: false,
     currentSearch: {},
+    scope: Constants.YEAR
   },
   currentFocus: {
     startYear: 0,
@@ -82,5 +84,14 @@ export const stateReducer = createReducer(
         endYear: endYear,
       },
     };
+  }),
+  on(Actions.setScope, (state: AppState, data) => {
+    return {
+      ...state,
+      technical: {
+        ...state.technical,
+        scope: data.scope
+      }
+    }
   })
 );

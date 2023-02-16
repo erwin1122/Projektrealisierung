@@ -9,11 +9,14 @@ import { StationResponse } from 'src/models/stationResponse';
 import { TempValue } from 'src/models/tempValue';
 import { ApiService } from 'src/services/api-service.service';
 import * as Actions from '../../state/state.actions';
+import { DialogService } from 'primeng/dynamicdialog';
+import { SearchModalComponent } from '../search-modal/search-modal.component';
 
 @Component({
   selector: 'app-temp-chart',
   templateUrl: './temp-chart.component.html',
   styleUrls: ['./temp-chart.component.css'],
+  providers: [DialogService],
 })
 export class TempChartComponent implements OnInit {
   apiData: StationResponse = { station: {}, values: [] };
@@ -105,6 +108,10 @@ export class TempChartComponent implements OnInit {
   currentStation: Station | undefined;
   currentScope: string = Constants.YEAR;
 
+  year = Constants.YEAR;
+  month = Constants.MONTH;
+  day = Constants.DAYS;
+
   showSidebar: boolean = true;
 
   basicOptions: any = {
@@ -139,7 +146,8 @@ export class TempChartComponent implements OnInit {
 
   constructor(
     private store: Store<GlobalState>,
-    private apiService: ApiService
+    private apiService: ApiService,
+    public dialogService: DialogService
   ) {}
 
   ngOnInit(): void {
@@ -151,6 +159,36 @@ export class TempChartComponent implements OnInit {
         this.currentStation = station;
         this.getInitialData(this.currentStation.id);
       });
+
+    this.store
+      .select((state) => state.state.technical.scope)
+      .subscribe((scope) => (this.currentScope = scope));
+  }
+
+  navigateToYears() {
+    this.apiService
+      .getInitialStationData(this.currentStation?.id)
+      ?.subscribe((data: any) => {
+        this.apiData.values = data.values;
+        this.store.dispatch(Actions.setScope({ scope: Constants.YEAR }));
+        this.extractData(this.apiData.values);
+      });
+  }
+
+  navigateToMonths() {
+    var year: number = this.apiData.values[0].year;
+
+    this.apiService
+      .getYear(this.currentStation?.id, year)
+      .subscribe((data: any) => {
+        this.apiData.values = data.values;
+        this.store.dispatch(Actions.setScope({ scope: Constants.MONTH }));
+        this.extractData(data.values);
+      });
+  }
+
+  showSearchModal() {
+    const ref = this.dialogService.open(SearchModalComponent, {});
   }
 
   toggleGesamtwerte() {
@@ -225,7 +263,7 @@ export class TempChartComponent implements OnInit {
         .getYear(this.currentStation?.id, year)
         .subscribe((data: any) => {
           this.apiData.values = data.values;
-          this.currentScope = Constants.MONTH;
+          this.store.dispatch(Actions.setScope({ scope: Constants.MONTH }));
           this.extractData(data.values);
         });
     }
@@ -239,7 +277,7 @@ export class TempChartComponent implements OnInit {
       .getMonth(this.currentStation?.id, year, month)
       .subscribe((data: any) => {
         this.apiData.values = data.values;
-        this.currentScope = Constants.DAYS;
+        this.store.dispatch(Actions.setScope({ scope: Constants.DAYS }));
         this.extractData(data.values);
       });
   }
@@ -251,7 +289,7 @@ export class TempChartComponent implements OnInit {
   getInitialData(stationId: string | undefined) {
     this.apiService.getInitialStationData(stationId)?.subscribe((data: any) => {
       this.apiData.values = data.values;
-      this.currentScope = Constants.YEAR;
+      this.store.dispatch(Actions.setScope({ scope: Constants.YEAR }));
       this.extractData(this.apiData.values);
     });
   }
@@ -264,7 +302,7 @@ export class TempChartComponent implements OnInit {
     if (this.currentScope == Constants.YEAR) {
       this.apiService.getYear(stationId, year).subscribe((data: any) => {
         this.apiData.values = data.values;
-        this.currentScope = Constants.MONTH;
+        this.store.dispatch(Actions.setScope({ scope: Constants.MONTH }));
         this.extractData(this.apiData.values);
       });
     }
@@ -273,7 +311,7 @@ export class TempChartComponent implements OnInit {
         .getMonth(stationId, year, month)
         .subscribe((data: any) => {
           this.apiData.values = data.values;
-          this.currentScope = Constants.DAYS;
+          this.store.dispatch(Actions.setScope({ scope: Constants.DAYS }));
           this.extractData(this.apiData.values);
         });
     }

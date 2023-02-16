@@ -1,3 +1,41 @@
+<header
+  style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 30px;
+  "
+>
+  <h1 style="display: inline-block">Temperaturauswertung</h1>
+  <span>
+    <button
+      *ngIf="currentScope == year"
+      pButton
+      type="button"
+      (click)="showSearchModal()"
+      icon="pi pi-search"
+      class="p-button-lg p-button-rounded p-button-outlined p-button-secondary"
+      label="Suche"
+    ></button>
+    <button
+      *ngIf="currentScope == month"
+      pButton
+      type="button"
+      (click)="navigateToYears()"
+      icon="pi pi-arrow-left"
+      class="p-button-lg p-button-rounded p-button-outlined p-button-secondary"
+    ></button>
+    <button
+      *ngIf="currentScope == day"
+      pButton
+      type="button"
+      (click)="navigateToMonths()"
+      icon="pi pi-arrow-left"
+      class="p-button-lg p-button-rounded p-button-outlined p-button-secondary"
+    ></button>
+  </span>
+</header>
+
 <div
   style="display: grid; grid-template-columns: 9fr 3fr 0.1fr"
   [ngClass]="{ openGrid: showSidebar }"

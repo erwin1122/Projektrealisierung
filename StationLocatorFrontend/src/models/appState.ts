@@ -1,9 +1,9 @@
 import { Station } from './station';
-import { StationResponse } from './stationResponse';
 import { TempValue } from './tempValue';
 
 export interface AppState {
   technical: {
+    scope: string;
     isLoading: boolean;
     currentSearch: {
       latitude?: number;
