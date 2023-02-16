@@ -49,7 +49,6 @@
       [style]="{ 'margin-bottom': '1em', background: '#F2F2F2' }"
     >
       <span class="p-input-icon-left">
-        <i class="pi pi-search"></i>
         <input
           id="yearSearch"
           type="text"
@@ -194,6 +193,16 @@
       <p *ngIf="!showSidebar">+</p>
     </div>
     <div
+      *ngIf="showSidebar"
+      style="
+        background-color: rgb(100, 116, 139);
+        height: 100%;
+        width: 1px;
+        margin-right: 20px;
+      "
+    ></div>
+    <div
+      *ngIf="!showSidebar"
       style="background-color: rgb(100, 116, 139); height: 100%; width: 1px"
     ></div>
     <div class="sidebar" [ngClass]="{ open: showSidebar }">

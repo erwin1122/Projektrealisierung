@@ -1,6 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
 import { AppState } from 'src/models/appState';
-import { Constants } from 'src/models/constants';
 import { Station } from 'src/models/station';
 import * as Actions from './state.actions';
 

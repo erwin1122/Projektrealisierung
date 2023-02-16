@@ -32,6 +32,7 @@ import { LoadingComponent } from './loading/loading.component';
 import { SearchWindowComponent } from './search-window/search-window.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { SearchModalComponent } from './search-modal/search-modal.component';
+import { StartScreenComponent } from './start-screen/start-screen.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { SearchModalComponent } from './search-modal/search-modal.component';
     SearchWindowComponent,
     SidebarComponent,
     SearchModalComponent,
+    StartScreenComponent,
   ],
   imports: [
     BrowserModule,

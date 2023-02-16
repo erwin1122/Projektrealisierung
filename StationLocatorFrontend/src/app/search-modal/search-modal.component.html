@@ -1,14 +1,11 @@
-<div style="display: grid; grid-template-columns: 1fr 1fr; max-width: 1000px">
-  <div
-    style="
-      height: 100%;
-      padding-right: 20px;
-      margin-right: 20px;
-      border-right: 1px solid black;
-    "
-  >
-    <h2>Suchkriterien</h2>
+<div
+  (keyup.enter)="searchForStations()"
+  style="display: grid; grid-template-columns: 1fr 1px 1fr; max-width: 1000px"
+>
+  <div style="height: 100%; padding: 40px; padding-top: 20px">
+    <h2 style="text-align: center">Suchkriterien</h2>
     <input
+      style="margin-bottom: 5px"
       class="p-inputtext-sm"
       type="text"
       pInputText
@@ -16,21 +13,28 @@
       [(ngModel)]="searchInput.latitude"
     />
     <input
+      style="margin-bottom: 30px"
       class="p-inputtext-sm"
-      [style]="{ 'padding-bottom': '10px' }"
       type="text"
       pInputText
       placeholder="Geografische Länge"
       [(ngModel)]="searchInput.longitude"
     />
     <p-dropdown
+      style="width: 100%"
       [options]="countries"
       [(ngModel)]="country"
       optionLabel="name"
       [showClear]="true"
       placeholder="Länderfilter"
     ></p-dropdown>
-    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr">
+    <div
+      style="
+        display: grid;
+        grid-template-columns: 1fr 0.1fr 1fr;
+        margin-bottom: 30px;
+      "
+    >
       <input
         class="p-inputtext-sm"
         type="text"
@@ -38,7 +42,7 @@
         placeholder="Jahr von"
         [(ngModel)]="searchInput.startYear"
       />
-      <pre>   -   </pre>
+      <pre style="font-weight: bolder">   -   </pre>
       <input
         class="p-inputtext-sm"
         type="text"
@@ -48,31 +52,52 @@
       />
     </div>
 
-    <p>Anpassung Anzahl anzuzeigender Stationen in der Nähe/Vorschläge:</p>
-    <div>
-      <label for="vertical" style="display: block">Vertical</label>
+    <p style="margin-bottom: 20px">
+      Anpassung Anzahl anzuzeigender Stationen in der Nähe/Vorschläge:
+    </p>
+    <div style="width: 100%;">
       <p-inputNumber
+        style="float: left"
         [(ngModel)]="searchInput.count"
+        mode="decimal"
         [showButtons]="true"
-        buttonLayout="vertical"
-        spinnerMode="vertical"
-        inputId="vertical"
-        decrementButtonClass="p-button-secondary"
-        incrementButtonClass="p-button-secondary"
-        incrementButtonIcon="pi pi-plus"
-        decrementButtonIcon="pi pi-minus"
+        inputId="minmax-buttons"
+        [min]="0"
+        [max]="100"
       >
       </p-inputNumber>
+      <button
+        style="float: right; margin-bottom: 10px"
+        (click)="searchForStations()"
+        pButton
+        pRipple
+        type="button"
+        label="Suche"
+        class="p-button-outlined p-button-secondary"
+      ></button>
     </div>
-  </div>
-  <div style="height: 100%">
-    <h2>Stationen in der Nähe</h2>
-    <app-station-list></app-station-list>
+    <!-- <button (click)="searchForStations()">Suche</button> -->
   </div>
   <div
-    style="width: 100%; height: 100px; background-color: lightgrey"
-    (click)="searchForStations()"
-  >
-    BUTTON
+    style="
+      height: 100%;
+      width: 1px;
+      background-color: black;
+      margin-top: 20px;
+      margin-bottom: 200px;
+    "
+  ></div>
+  <div style="height: 100%; padding: 40px; padding-top: 20px">
+    <h2 style="text-align: center">Stationen in der Nähe</h2>
+    <app-station-list></app-station-list>
+    <!-- <button
+      (click)="closeModal()"
+      pButton
+      pRipple
+      type="button"
+      label="Bestätigen"
+      class="p-button-outlined p-button-secondary"
+      style="margin-top: 10px; float: right"
+    ></button> -->
   </div>
 </div>
