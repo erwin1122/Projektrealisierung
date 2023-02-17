@@ -2,23 +2,10 @@ import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Constants } from 'src/models/constants';
+import { Country } from 'src/models/country';
 import { GlobalState } from 'src/models/globalState';
+import { SearchInput } from 'src/models/searchInput';
 import * as Actions from '../../state/state.actions';
-
-interface Country {
-  name?: string;
-  country_code?: string;
-}
-
-interface SearchInput {
-  latitude?: string;
-  longitude?: string;
-  country?: string;
-  startYear?: number;
-  endYear?: number;
-  count?: number;
-  radius?: number;
-}
 
 @Component({
   selector: 'app-search-modal',

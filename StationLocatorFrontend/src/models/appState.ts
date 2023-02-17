@@ -1,3 +1,4 @@
+import { SearchInput } from './searchInput';
 import { Station } from './station';
 import { TempValue } from './tempValue';
 
@@ -5,14 +6,7 @@ export interface AppState {
   technical: {
     scope: string;
     isLoading: boolean;
-    currentSearch: {
-      latitude?: number;
-      longitude?: number;
-      country?: string;
-      startYear?: number;
-      endYear?: number;
-      count?: number;
-    };
+    currentSearch: SearchInput
   };
   currentFocus: {
     startYear: number;

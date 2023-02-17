@@ -1,8 +1,6 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using StationLocator.Models;
-using System;
-using System.Diagnostics;
 using System.Globalization;
 
 namespace StationLocator
@@ -188,34 +186,22 @@ namespace StationLocator
         {
             List<TempValue> recordsOfType = records.Where(record => record._type == type).ToList();
 
+            List<TempValue> values = new List<TempValue>();
+            float? value = null;
+
             if(type == "TMAX")
             {
-                var value = recordsOfType.Where(x => x.maxTemp != null).Sum(r => r.maxTemp) / recordsOfType.Where(x => x.maxTemp != null).Count();
-
-                if (value != value)
-                {
-                    return null;
-                }
-                else
-                {
-                    return value;
-                }
+                values = recordsOfType.Where(x => x.maxTemp != null).ToList();
+                value = values.Sum(r => r.maxTemp) / values.Count();
             }
-            if(type == "TMIN")
+
+            if (type == "TMIN")
             {
-                var value = recordsOfType.Where(x => x.minTemp != null).Sum(r => r.minTemp) / recordsOfType.Where(x => x.minTemp != null).Count();
-
-                if (value != value)
-                {
-                    return null;
-                }
-                else
-                {
-                    return value;
-                }
+                values = recordsOfType.Where(x => x.minTemp != null).ToList();
+                value = values.Sum(r => r.minTemp) / values.Count();
             }
 
-            return null;
+            return value;
         }
     }
 }

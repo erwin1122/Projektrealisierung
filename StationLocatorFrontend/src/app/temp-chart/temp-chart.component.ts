@@ -230,8 +230,12 @@ export class TempChartComponent implements OnInit {
   }
 
   getChartHeader() {
+    if (!this.currentStation || Object.keys(this.currentStation).length == 0) {
+      return 'Mittelwerte für Station - | - ';
+    }
+
     if (this.currentScope == Constants.YEAR) {
-      return `Mittelwerte für Station ${this.currentStation?.location} | ${
+      return `Mittelwerte für Station ${this.currentStation.location} | ${
         this.apiData.values[0]?.year ? this.apiData.values[0]?.year : ''
       } - ${
         this.apiData.values[this.apiData.values.length - 1]?.year
@@ -241,18 +245,18 @@ export class TempChartComponent implements OnInit {
     }
 
     if (this.currentScope == Constants.MONTH) {
-      return `Monatliche Mittelwerte für Station ${this.currentStation?.location} | ${this.apiData.values[0]?.year}`;
+      return `Monatliche Mittelwerte für Station ${this.currentStation.location} | ${this.apiData.values[0]?.year}`;
     }
 
     if (this.currentScope == Constants.DAYS) {
-      return `Werte für Station ${this.currentStation?.location} | ${
+      return `Werte für Station ${this.currentStation.location} | ${
         this.months[this.apiData.values[0]?.month - 1]
           ? this.months[this.apiData.values[0]?.month - 1]
           : ''
       } ${this.apiData.values[0]?.year ? this.apiData.values[0]?.year : ''}`;
     }
 
-    return '';
+    return 'Mittelwerte für Station - | - ';
   }
 
   searchYear(e: any) {

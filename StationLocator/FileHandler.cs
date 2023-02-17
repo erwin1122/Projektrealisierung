@@ -1,7 +1,4 @@
-﻿using StationLocator.Models;
-using System.IO.Compression;
-using System.Net;
-using System.Runtime.CompilerServices;
+﻿using System.IO.Compression;
 using System.Text.RegularExpressions;
 
 namespace StationLocator
@@ -23,9 +20,8 @@ namespace StationLocator
                 using FileStream decompressedFile = File.Create(filePath);
                 using GZipStream decompressionStream = new GZipStream(content, CompressionMode.Decompress);
                 decompressionStream.CopyTo(decompressedFile);
-                return true;
             }
-            return false;
+            return true;
         }
 
         private static bool CheckStationFileAlreadyOnSystem(string id)
