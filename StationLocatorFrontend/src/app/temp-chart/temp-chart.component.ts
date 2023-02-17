@@ -188,7 +188,9 @@ export class TempChartComponent implements OnInit {
   }
 
   showSearchModal() {
-    const ref = this.dialogService.open(SearchModalComponent, {});
+    const ref = this.dialogService.open(SearchModalComponent, {
+      header: 'Suche',
+    });
   }
 
   toggleGesamtwerte() {
