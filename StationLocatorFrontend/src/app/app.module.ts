@@ -1,11 +1,14 @@
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
+import { FormsModule } from '@angular/forms';
+
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { FormsModule } from '@angular/forms';
+
 import { ListboxModule } from 'primeng/listbox';
 import { DropdownModule } from 'primeng/dropdown';
 import { ChartModule } from 'primeng/chart';
@@ -15,8 +18,6 @@ import { ToastModule } from 'primeng/toast';
 import { TableModule } from 'primeng/table';
 import { CardModule } from 'primeng/card';
 import { SidebarModule } from 'primeng/sidebar';
-// import {CommonModule} from 'primeng/';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -24,13 +25,13 @@ import { CalendarModule } from 'primeng/calendar';
 
 import { AppComponent } from './main/app.component';
 import { StationListComponent } from './station-list/station-list.component';
-
-import { stateReducer } from 'src/state/state.reducer';
-import { StateEffects } from 'src/state/state.effects';
 import { TempChartComponent } from './temp-chart/temp-chart.component';
 import { LoadingComponent } from './loading/loading.component';
 import { SearchModalComponent } from './search-modal/search-modal.component';
 import { StartScreenComponent } from './start-screen/start-screen.component';
+
+import { stateReducer } from 'src/state/state.reducer';
+import { StateEffects } from 'src/state/state.effects';
 
 @NgModule({
   declarations: [
@@ -65,7 +66,6 @@ import { StartScreenComponent } from './start-screen/start-screen.component';
     CalendarModule,
     InputNumberModule,
     CheckboxModule,
-    // CommonModule,
     BrowserAnimationsModule,
   ],
   providers: [],
