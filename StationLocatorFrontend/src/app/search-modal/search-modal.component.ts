@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import {
+  DialogService,
+  DynamicDialogConfig,
+  DynamicDialogRef,
+} from 'primeng/dynamicdialog';
 import { Constants } from 'src/models/constants';
 import { Country } from 'src/models/country';
 import { GlobalState } from 'src/models/globalState';
@@ -11,6 +15,7 @@ import * as Actions from '../../state/state.actions';
   selector: 'app-search-modal',
   templateUrl: './search-modal.component.html',
   styleUrls: ['./search-modal.component.css'],
+  providers: [DialogService],
 })
 export class SearchModalComponent {
   searchInput: SearchInput = { count: 5 };
@@ -20,9 +25,32 @@ export class SearchModalComponent {
 
   constructor(
     private store: Store<GlobalState>,
-    private ref: DynamicDialogRef
+    private ref: DynamicDialogRef,
+    private dialogService: DynamicDialogConfig
   ) {
     this.countries = Constants.COUNTRIES;
+
+    this.searchInput.count = this.dialogService.data?.count
+      ? this.dialogService.data.count
+      : null;
+    this.searchInput.country = this.dialogService.data?.country
+      ? this.dialogService.data.country
+      : null;
+    this.searchInput.startYear = this.dialogService.data?.startYear
+      ? this.dialogService.data.startYear
+      : null;
+    this.searchInput.endYear = this.dialogService.data?.endYear
+      ? this.dialogService.data.endYear
+      : null;
+    this.searchInput.latitude = this.dialogService.data?.latitude
+      ? this.dialogService.data.latitude
+      : null;
+    this.searchInput.longitude = this.dialogService.data?.longitude
+      ? this.dialogService.data.longitude
+      : null;
+    this.searchInput.radius = this.dialogService.data?.radius
+      ? this.dialogService.data.radius
+      : null;
   }
 
   closeModal() {

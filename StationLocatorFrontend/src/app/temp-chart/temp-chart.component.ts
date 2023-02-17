@@ -11,6 +11,7 @@ import { ApiService } from 'src/services/api-service.service';
 import * as Actions from '../../state/state.actions';
 import { DialogService } from 'primeng/dynamicdialog';
 import { SearchModalComponent } from '../search-modal/search-modal.component';
+import { SearchInput } from 'src/models/searchInput';
 
 @Component({
   selector: 'app-temp-chart',
@@ -113,6 +114,7 @@ export class TempChartComponent implements OnInit {
   day = Constants.DAYS;
 
   showSidebar: boolean = true;
+  currentSearch: SearchInput = {};
 
   basicOptions: any = {
     responsive: true,
@@ -163,6 +165,10 @@ export class TempChartComponent implements OnInit {
     this.store
       .select((state) => state.state.technical.scope)
       .subscribe((scope) => (this.currentScope = scope));
+
+    this.store
+      .select((state) => state.state.technical.currentSearch)
+      .subscribe((search) => (this.currentSearch = search));
   }
 
   navigateToYears() {
@@ -190,6 +196,7 @@ export class TempChartComponent implements OnInit {
   showSearchModal() {
     const ref = this.dialogService.open(SearchModalComponent, {
       header: 'Suche',
+      data: this.currentSearch,
     });
   }
 

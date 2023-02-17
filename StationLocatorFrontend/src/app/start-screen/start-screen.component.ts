@@ -4,6 +4,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { GlobalState } from 'src/models/globalState';
 import { SearchModalComponent } from '../search-modal/search-modal.component';
 import * as Actions from '../../state/state.actions';
+import { SearchInput } from 'src/models/searchInput';
 
 @Component({
   selector: 'app-start-screen',
@@ -13,6 +14,7 @@ import * as Actions from '../../state/state.actions';
 })
 export class StartScreenComponent {
   isVisible: boolean = true;
+  currentSearch: SearchInput = { count: 5 };
 
   constructor(
     public dialogService: DialogService,
@@ -30,7 +32,10 @@ export class StartScreenComponent {
   }
 
   show() {
-    this.dialogService.open(SearchModalComponent, { header: 'Suche' });
+    this.dialogService.open(SearchModalComponent, {
+      header: 'Suche',
+      data: this.currentSearch,
+    });
     this.isVisible = false;
   }
 }

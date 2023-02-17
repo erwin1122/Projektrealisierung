@@ -59,6 +59,7 @@ export const stateReducer = createReducer(
     ...state,
     technical: {
       ...state.technical,
+      currentSearch: searchInput,
       isLoading: true,
     },
   })),
