@@ -187,25 +187,22 @@ namespace StationLocator
             List<TempValue> recordsOfType = records.Where(record => record._type == type).ToList();
 
             List<TempValue> values = new List<TempValue>();
+            int count = values.Count();
             float? value = null;
 
-            if(type == "TMAX")
+            if(count> 0)
             {
-                values = recordsOfType.Where(x => x.maxTemp != null).ToList();
-
-                if(values.Count() > 0)
+                if(type == "TMAX")
                 {
-                    value = values.Sum(r => r.maxTemp) / values.Count();
+                    values = recordsOfType.Where(x => x.maxTemp != null).ToList();
+                    value = values.Sum(r => r.maxTemp) / count;
+                    
                 }
-            }
 
-            if (type == "TMIN")
-            {
-                values = recordsOfType.Where(x => x.minTemp != null).ToList();
-
-                if(values.Count() > 0)
+                if (type == "TMIN")
                 {
-                    value = values.Sum(r => r.minTemp) / values.Count();
+                    values = recordsOfType.Where(x => x.minTemp != null).ToList();
+                    value = values.Sum(r => r.minTemp) / count;
                 }
             }
 
