@@ -306,6 +306,10 @@ export class TempChartComponent implements OnInit {
     var month: number = this.apiData.values[e.element.index].month;
 
     if (this.currentScope == Constants.YEAR) {
+      this.selectedCategories = this.selectedCategories.filter(
+        (dataLine: DataLine) => !this.meteoCheckboxes.includes(dataLine)
+      );
+
       this.apiService.getYear(stationId, year).subscribe((data: any) => {
         this.apiData.values = data.values;
         this.store.dispatch(Actions.setScope({ scope: Constants.MONTH }));

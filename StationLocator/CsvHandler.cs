@@ -192,13 +192,21 @@ namespace StationLocator
             if(type == "TMAX")
             {
                 values = recordsOfType.Where(x => x.maxTemp != null).ToList();
-                value = values.Sum(r => r.maxTemp) / values.Count();
+
+                if(values.Count() > 0)
+                {
+                    value = values.Sum(r => r.maxTemp) / values.Count();
+                }
             }
 
             if (type == "TMIN")
             {
                 values = recordsOfType.Where(x => x.minTemp != null).ToList();
-                value = values.Sum(r => r.minTemp) / values.Count();
+
+                if(values.Count() > 0)
+                {
+                    value = values.Sum(r => r.minTemp) / values.Count();
+                }
             }
 
             return value;
