@@ -309,6 +309,7 @@ export class TempChartComponent implements OnInit {
       this.selectedCategories = this.selectedCategories.filter(
         (dataLine: DataLine) => !this.meteoCheckboxes.includes(dataLine)
       );
+      this.meteoWerteCheckbox = !this.meteoWerteCheckbox;
 
       this.apiService.getYear(stationId, year).subscribe((data: any) => {
         this.apiData.values = data.values;
