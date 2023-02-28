@@ -7,7 +7,7 @@ import { GlobalState } from 'src/models/globalState';
   providedIn: 'root',
 })
 export class ApiService {
-  baseUrl: string = 'https://localhost:44326/';
+  baseUrl: string = 'https://localhost:5001/';
 
   private startYear: number = 0;
   private endYear: number = 20000;

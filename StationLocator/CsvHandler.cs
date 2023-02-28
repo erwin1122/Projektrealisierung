@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using StationLocator.Models;
+using System;
 using System.Globalization;
 
 namespace StationLocator
@@ -12,15 +13,23 @@ namespace StationLocator
             using var reader = new StreamReader(Path.GetRelativePath(Directory.GetCurrentDirectory(), $"Files/Stations/{id}-{DateTime.Now.ToString("yyyy-MM-dd")}.csv"));
             var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ",", HasHeaderRecord = false };
             using var csv = new CsvReader(reader, config);
-            {
-                List<TempValueCSV> records = csv.GetRecords<TempValueCSV>().Where(r => r._type == "TMAX" || r._type == "TMIN").ToList();
-                List<TempValue> cleanRecords = records.Select(x => new TempValue { year = x.year, month = x.month, day = x.day, maxTemp = x.maxTemp, minTemp = x.minTemp, _type = x._type }).ToList();
 
-                return cleanRecords;
-            }
+            return csv.GetRecords<TempValueCSV>()
+                     .Where(r => r._type == "TMAX" || r._type == "TMIN")
+                     .Select(x => new TempValue
+                     {
+                         id = id,
+                         year = x.year,
+                         month = x.month,
+                         day = x.day,
+                         maxTemp = x.maxTemp,
+                         minTemp = x.minTemp,
+                         _type = x._type
+                     })
+                     .ToList();
         }
 
-        public static List<Station> FindStations(float latitude, float longitude, string? country, int? start_year, int? end_year, int? radius, int count)
+        public static List<Station> FindStations(float latitude, float longitude, string? country, int? startYear, int? endYear, int? radius, int count)
         {
             using var reader = new StreamReader(Path.GetRelativePath(Directory.GetCurrentDirectory(), $"Files/ghcnd-stations.csv"));
             var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ";;", HasHeaderRecord = false, BadDataFound = null, MissingFieldFound = null};
@@ -28,65 +37,48 @@ namespace StationLocator
 
             var stations = csv.GetRecords<Station>().ToList();
 
-            // Länderfilter
-            if (!String.IsNullOrEmpty(country))
+            // Filter by country
+            if (!string.IsNullOrEmpty(country))
             {
                 stations = stations.Where(station => station.id.StartsWith(country)).ToList();
             }
 
-            // Berechne die Distanzen zu allen Stationen
-            foreach (Station station in stations)
-            {
-                station.distance = CalculateDistance(Convert.ToDouble(longitude), Convert.ToDouble(latitude), Convert.ToDouble(station.longitude.Replace(".", ",")), Convert.ToDouble(station.latitude.Replace(".", ",")));
-            }
+            // Calculate distances to all stations
+            stations.ForEach(station => station.distance = CalculateDistance(Convert.ToDouble(longitude), Convert.ToDouble(latitude), Convert.ToDouble(station.longitude.Replace(".", ",")), Convert.ToDouble(station.latitude.Replace(".", ","))));
 
-            // Radiusfilter
+            // Filter by radius
             if (radius != null)
             {
                 stations = stations.Where(station => station.distance <= radius).ToList();
             }
 
-            // Jahresfilter
-            if (start_year != null || end_year != null)
+            // Filter by year range
+            if (startYear != null || endYear != null)
             {
-                stations = stations.Where(station => IsInDateRange(station, start_year, end_year)).ToList();
+                stations = stations.Where(station => IsInDateRange(station, startYear, endYear)).ToList();
             }
 
-            // Sortiere die Liste der Stationen nach Entfernung
-            stations = stations.OrderBy(r => r.distance).ToList();
+            // Sort stations by distance
+            stations = stations.OrderBy(station => station.distance).ToList();
 
-            if (stations.Count < count)
-            {
-                return stations;
-            }
-            
-            return stations.GetRange(0, count);            
+            return stations.Take(count).ToList();
         }
 
         private static bool IsInDateRange(Station station, int? startYear, int? endYear)
         {
             if (startYear != null && endYear != null)
-            { 
-                if (station.startYear <= startYear && station.endYear >= endYear)
-                {
-                    return true;
-                }
+            {
+                return station.startYear <= startYear && station.endYear >= endYear;
             }
 
-            if (startYear != null && endYear == null)
+            if (startYear != null)
             {
-                if (station.startYear <= startYear)
-                {
-                    return true;
-                }
+                return station.startYear <= startYear;
             }
 
-            if(startYear == null && endYear != null)
+            if (endYear != null)
             {
-                if(station.endYear >= endYear)
-                {
-                    return true;
-                }
+                return station.endYear >= endYear;
             }
 
             return false;
@@ -146,6 +138,14 @@ namespace StationLocator
                     scope = "years",
                     maxTemp = CalculateMeanTemp(values, "TMAX"),
                     minTemp = CalculateMeanTemp(values, "TMIN"),
+                    minTempW = CalculateMeanTempSeason(values, "TMIN", "winter"),
+                    minTempF = CalculateMeanTempSeason(values, "TMIN", "spring"),
+                    minTempS= CalculateMeanTempSeason(values, "TMIN", "summer"),
+                    minTempH= CalculateMeanTempSeason(values, "TMIN", "autumn"),
+                    maxTempW = CalculateMeanTempSeason(values, "TMAX", "winter"),
+                    maxTempF = CalculateMeanTempSeason(values, "TMAX", "spring"),
+                    maxTempS= CalculateMeanTempSeason(values, "TMAX", "summer"),
+                    maxTempH= CalculateMeanTempSeason(values, "TMAX", "autumn")
                 });
             }
             return filteredTemps;
@@ -184,33 +184,64 @@ namespace StationLocator
 
         private static float? CalculateMeanTemp(List<TempValue> records, string type)
         {
-            List<TempValue> recordsOfType = records.Where(record => record._type == type).ToList();
+            var recordsOfType = records.Where(record => record._type == type);
 
-            List<TempValue> values = new List<TempValue>();
-            float? value = null;
-
-            if(type == "TMAX")
+            return type switch
             {
-                values = recordsOfType.Where(x => x.maxTemp != null).ToList();
-                int count = values.Count();
-                if (count > 0)
-                {
-                    value = values.Sum(r => r.maxTemp) / count;
-                }
-                    
+                "TMAX" => CalcMean(recordsOfType.Select(r => r.maxTemp)),
+                "TMIN" => CalcMean(recordsOfType.Select(r => r.minTemp)),
+                _ => null
+            };
+        }
+
+        private static float? CalculateMeanTempSeason(List<TempValue>? records, string type, string season)
+        {
+            if (records == null) { return null; }
+
+            var recordsOfType = records.Where(record => record._type == type);
+
+            recordsOfType = season switch
+            {
+                "spring" => recordsOfType.Where(x => x.month >= 3 && x.month <= 5),
+                "summer" => recordsOfType.Where(x => x.month >= 6 && x.month <= 8),
+                "autumn" => recordsOfType.Where(x => x.month >= 9 && x.month <= 11),
+                "winter" => GetWinterMonths(recordsOfType.ToList()),
+                _ => new List<TempValue>()
+            };
+
+            return type switch
+            {
+                "TMAX" => CalcMean(recordsOfType.Select(r => r.maxTemp)),
+                "TMIN" => CalcMean(recordsOfType.Select(r => r.minTemp)),
+                _ => null
+            };
+        }
+
+        private static float? CalcMean(IEnumerable<float?> values)
+        {
+            var validValues = values.Where(v => v.HasValue);
+            var count = validValues.Count();
+
+            if (count == 0)
+            {
+                return null;
             }
 
-            if (type == "TMIN")
-            {
-                values = recordsOfType.Where(x => x.minTemp != null).ToList();
-                int count = values.Count();
-                if (count > 0)
-                {
-                    value = values.Sum(r => r.minTemp) / count;
-                }
-            }
+            return validValues.Sum() / count;
+        }
 
-            return value;
+        private static IEnumerable<TempValue> GetWinterMonths(List<TempValue> records)
+        {
+            int? year = records[0].year;
+            string? stationId = records[0].id;
+
+            var lastYearRecords = GetStationValuesById(stationId)
+                .Where(value => value.year == year - 1 && value.month == 12)
+                .ToList();
+
+            records.AddRange(lastYearRecords);
+
+            return records.Where(x => x.month == 12 || x.month == 1 || x.month == 2);
         }
     }
 }

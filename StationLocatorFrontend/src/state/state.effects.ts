@@ -10,7 +10,7 @@ import { GlobalState } from 'src/models/globalState';
 
 @Injectable()
 export class StateEffects {
-  private baseURL = 'https://localhost:44326/';
+  private baseURL = 'https://localhost:5001/';
 
   private startYear: number = 0;
   private endYear: number = 20000;
@@ -53,7 +53,7 @@ export class StateEffects {
       ofType(StateActions.searchForStations),
       mergeMap((searchInput) =>
         this.http
-          .get(this.baseURL + `WeatherStation`, {
+          .get(this.baseURL, {
             params: searchInput,
           })
           .pipe(

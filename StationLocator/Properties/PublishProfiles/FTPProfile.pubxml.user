@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAlokqDTaDDEmQpNjjUYn8fwAAAAACAAAAAAADZgAAwAAAABAAAAASze6fOMgC28NyV44xIK31AAAAAASAAACgAAAAEAAAAJTLsUWY5XNj6d3YQszaCNAgAAAAaAxrJNAfG1FfZIAVw3AUf5DKC3ivP44VLSrwDwLQ0QoUAAAAy0+f1X2e1qkAZbBLGaj3ibLVqLE=</EncryptedPassword>
+    <_PublishTargetUrl>ftp://ftp.strato.de:21/Temperaturauswertung_Backend</_PublishTargetUrl>
+    <History>True|2023-02-20T19:50:16.4317364Z;True|2023-02-20T20:47:45.6391654+01:00;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="appsettings.Development.json">
+      <publishTime>01/12/2023 12:57:26</publishTime>
+    </File>
+    <File Include="appsettings.json">
+      <publishTime>01/12/2023 12:57:26</publishTime>
+    </File>
+    <File Include="CsvHelper.dll">
+      <publishTime>11/11/2022 20:49:44</publishTime>
+    </File>
+    <File Include="Geolocation.dll">
+      <publishTime>02/25/2020 15:45:16</publishTime>
+    </File>
+    <File Include="Microsoft.Data.Sqlite.dll">
+      <publishTime>11/30/2022 14:33:34</publishTime>
+    </File>
+    <File Include="Microsoft.OpenApi.dll">
+      <publishTime>08/29/2020 22:14:12</publishTime>
+    </File>
+    <File Include="runtimes/linux-x64/native/libsqlite3.so">
+      <publishTime>10/18/2016 23:36:58</publishTime>
+    </File>
+    <File Include="runtimes/osx-x64/native/libsqlite3.dylib">
+      <publishTime>10/18/2016 23:37:00</publishTime>
+    </File>
+    <File Include="runtimes/win7-x64/native/sqlite3.dll">
+      <publishTime>10/18/2016 23:36:58</publishTime>
+    </File>
+    <File Include="runtimes/win7-x86/native/sqlite3.dll">
+      <publishTime>10/18/2016 23:36:58</publishTime>
+    </File>
+    <File Include="SQLitePCLRaw.core.dll">
+      <publishTime>09/18/2022 21:26:48</publishTime>
+    </File>
+    <File Include="StationLocator.deps.json">
+      <publishTime>02/20/2023 20:49:40</publishTime>
+    </File>
+    <File Include="StationLocator.dll">
+      <publishTime>02/20/2023 20:49:40</publishTime>
+    </File>
+    <File Include="StationLocator.exe">
+      <publishTime>02/20/2023 20:49:40</publishTime>
+    </File>
+    <File Include="StationLocator.pdb">
+      <publishTime>02/20/2023 20:49:40</publishTime>
+    </File>
+    <File Include="StationLocator.runtimeconfig.json">
+      <publishTime>02/20/2023 20:47:00</publishTime>
+    </File>
+    <File Include="Swashbuckle.AspNetCore.Swagger.dll">
+      <publishTime>10/16/2021 14:54:10</publishTime>
+    </File>
+    <File Include="Swashbuckle.AspNetCore.SwaggerGen.dll">
+      <publishTime>10/16/2021 14:54:36</publishTime>
+    </File>
+    <File Include="Swashbuckle.AspNetCore.SwaggerUI.dll">
+      <publishTime>10/16/2021 14:54:30</publishTime>
+    </File>
+    <File Include="web.config">
+      <publishTime>02/20/2023 20:49:40</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

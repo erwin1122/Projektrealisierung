@@ -3,7 +3,7 @@ using StationLocator.Models;
 
 namespace StationLocator.Controllers
 {
-    [Route("WeatherStation")]
+    [Route("/")]
     [ApiController]
     public class WeatherStationController : ControllerBase
     {

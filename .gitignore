@@ -1,3 +1,17 @@
 *.csv
 *.vsidx
 *.v2
+
+*.dll
+*.props
+*.pubxml
+*.so
+*.dylib
+
+.vs/
+bin/
+
+*.xml
+*.v5.2
+*.v2
+*.pdb
