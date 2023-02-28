@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import * as StateActions from './state.actions';
 import { Store } from '@ngrx/store';
 import { GlobalState } from 'src/models/globalState';
+import { Station } from 'src/models/station';
 
 @Injectable()
 export class StateEffects {
@@ -14,6 +15,7 @@ export class StateEffects {
 
   private startYear: number = 0;
   private endYear: number = 20000;
+  private currentStation: Station | undefined;
 
   constructor(
     private actions$: Actions,
@@ -22,21 +24,58 @@ export class StateEffects {
   ) {
     this.store
       .select((state) => state.state.currentFocus)
-      .subscribe((focus) => {
-        this.startYear = focus.startYear;
-        this.endYear = focus.endYear;
+      .subscribe((currentFocus) => {
+        this.startYear = currentFocus.startYear;
+        this.endYear = currentFocus.endYear;
+        this.currentStation = currentFocus.station;
       });
   }
 
-  loadCompleteData$ = createEffect(() =>
+  loadDataRange$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(StateActions.updateCurrentStation),
-      mergeMap((selectedStation) =>
+      ofType(StateActions.loadTempValuesYears),
+      mergeMap(() =>
         this.http
           .get(
             this.baseURL +
-              selectedStation.id +
+              this.currentStation?.id +
               `/range?startYear=${this.startYear}&endYear=${this.endYear}`
+          )
+          .pipe(
+            map((data) => StateActions.loadTempValuesSuccess(data)),
+            catchError((error) =>
+              of(StateActions.loadTempValuesFailure({ error }))
+            )
+          )
+      )
+    )
+  );
+
+  loadYear$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(StateActions.loadTempValuesYear),
+      mergeMap((customDate) =>
+        this.http
+          .get(this.baseURL + this.currentStation?.id + `/year?year=${customDate.year}`)
+          .pipe(
+            map((data) => StateActions.loadTempValuesSuccess(data)),
+            catchError((error) =>
+              of(StateActions.loadTempValuesFailure({ error }))
+            )
+          )
+      )
+    )
+  );
+
+  loadMonth$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(StateActions.loadTempValuesMonth),
+      mergeMap((customDate) =>
+        this.http
+          .get(
+            this.baseURL +
+              this.currentStation?.id +
+              `/month?year=${customDate.year}&month=${customDate.month}`
           )
           .pipe(
             map((data) => StateActions.loadTempValuesSuccess(data)),

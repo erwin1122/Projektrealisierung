@@ -35,6 +35,27 @@ export const stateReducer = createReducer(
       },
     })
   ),
+  on(Actions.loadTempValuesYears, (state: AppState) => ({
+    ...state,
+    technical: {
+      ...state.technical,
+      isLoading: true,
+    },
+  })),
+  on(Actions.loadTempValuesYear, (state: AppState) => ({
+    ...state,
+    technical: {
+      ...state.technical,
+      isLoading: true,
+    },
+  })),
+  on(Actions.loadTempValuesMonth, (state: AppState) => ({
+    ...state,
+    technical: {
+      ...state.technical,
+      isLoading: true,
+    },
+  })),
   on(Actions.loadTempValuesSuccess, (state: AppState, data) => {
     return {
       ...state,

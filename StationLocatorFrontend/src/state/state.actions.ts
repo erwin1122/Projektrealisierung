@@ -1,10 +1,25 @@
 import { createAction, props } from '@ngrx/store';
 import { Station } from 'src/models/station';
+import { CustomDate } from 'src/models/customDate';
 
 export const updateCurrentStation = createAction(
   '[Station List] updateCurrentStation',
   props<Station>()
 );
+
+export const loadTempValuesYears = createAction(
+  '[Current Station] load Temp Values Years (Range)'
+);
+
+export const loadTempValuesYear = createAction(
+  '[Current Station] load Temp Values Year',
+  props<CustomDate>()
+)
+
+export const loadTempValuesMonth = createAction(
+  "[Current Station] load Temp Values Month",
+  props<CustomDate>()
+)
 
 export const loadTempValuesSuccess = createAction(
   '[Current Station] loadTempValuesSuccess',

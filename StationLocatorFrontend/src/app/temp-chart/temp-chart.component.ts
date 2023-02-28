@@ -7,7 +7,6 @@ import { Constants } from 'src/models/constants';
 import { Station } from 'src/models/station';
 import { StationResponse } from 'src/models/stationResponse';
 import { TempValue } from 'src/models/tempValue';
-import { ApiService } from 'src/services/api-service.service';
 import * as Actions from '../../state/state.actions';
 import { DialogService } from 'primeng/dynamicdialog';
 import { SearchModalComponent } from '../search-modal/search-modal.component';
@@ -22,6 +21,7 @@ import { SearchInput } from 'src/models/searchInput';
 export class TempChartComponent implements OnInit {
   apiData: StationResponse = { station: {}, values: [] };
   chartData: ChartData = {};
+
   months: string[] = [
     'Januar',
     'Februar',
@@ -148,7 +148,6 @@ export class TempChartComponent implements OnInit {
 
   constructor(
     private store: Store<GlobalState>,
-    private apiService: ApiService,
     public dialogService: DialogService
   ) {}
 
@@ -156,40 +155,24 @@ export class TempChartComponent implements OnInit {
     this.toggleGesamtwerte();
 
     this.store
+      .select((state) => state.state.technical)
+      .subscribe((technical) => {
+        this.currentSearch = technical.currentSearch;
+        this.currentScope = technical.scope;
+      });
+
+    this.store
       .select((state) => state.state.currentFocus.station)
       .subscribe((station) => {
         this.currentStation = station;
-        this.getInitialData(this.currentStation.id);
+        this.navigateToYears();
       });
 
     this.store
-      .select((state) => state.state.technical.scope)
-      .subscribe((scope) => (this.currentScope = scope));
-
-    this.store
-      .select((state) => state.state.technical.currentSearch)
-      .subscribe((search) => (this.currentSearch = search));
-  }
-
-  navigateToYears() {
-    this.apiService
-      .getInitialStationData(this.currentStation?.id)
-      ?.subscribe((data: any) => {
-        this.apiData.values = data.values;
-        this.store.dispatch(Actions.setScope({ scope: Constants.YEAR }));
-        this.extractData(this.apiData.values);
-      });
-  }
-
-  navigateToMonths() {
-    var year: number = this.apiData.values[0].year;
-
-    this.apiService
-      .getYear(this.currentStation?.id, year)
-      .subscribe((data: any) => {
-        this.apiData.values = data.values;
-        this.store.dispatch(Actions.setScope({ scope: Constants.MONTH }));
-        this.extractData(data.values);
+      .select((state) => state.state.currentFocus.values)
+      .subscribe((data) => {
+        this.apiData.values = data;
+        this.extractData(data);
       });
   }
 
@@ -268,17 +251,28 @@ export class TempChartComponent implements OnInit {
     return 'Mittelwerte für Station - | - ';
   }
 
-  searchYear(e: any) {
-    if (this.searchInput) {
-      var year: number = +this.searchInput;
+  toggleSidebar() {
+    this.showSidebar = !this.showSidebar;
+  }
 
-      this.apiService
-        .getYear(this.currentStation?.id, year)
-        .subscribe((data: any) => {
-          this.apiData.values = data.values;
-          this.store.dispatch(Actions.setScope({ scope: Constants.MONTH }));
-          this.extractData(data.values);
-        });
+  navigateToYears() {
+    this.store.dispatch(Actions.loadTempValuesYears());
+    this.store.dispatch(Actions.setScope({ scope: Constants.YEAR }));
+  }
+
+  navigateToMonths() {
+    var year: number = this.apiData.values[0].year;
+
+    this.store.dispatch(Actions.loadTempValuesYear({ year: year }));
+    this.store.dispatch(Actions.setScope({ scope: Constants.MONTH }));
+  }
+
+  searchYear(e: any) {
+    var year = Number(this.searchInput);
+
+    if (!isNaN(year)) {
+      this.store.dispatch(Actions.loadTempValuesYear({ year: year }));
+      this.store.dispatch(Actions.setScope({ scope: Constants.MONTH }));
     }
   }
 
@@ -286,29 +280,13 @@ export class TempChartComponent implements OnInit {
     var month: number = this.searchInput.getMonth() + 1;
     var year: number = this.apiData.values[0].year;
 
-    this.apiService
-      .getMonth(this.currentStation?.id, year, month)
-      .subscribe((data: any) => {
-        this.apiData.values = data.values;
-        this.store.dispatch(Actions.setScope({ scope: Constants.DAYS }));
-        this.extractData(data.values);
-      });
-  }
-
-  toggleSidebar() {
-    this.showSidebar = !this.showSidebar;
-  }
-
-  getInitialData(stationId: string | undefined) {
-    this.apiService.getInitialStationData(stationId)?.subscribe((data: any) => {
-      this.apiData.values = data.values;
-      this.store.dispatch(Actions.setScope({ scope: Constants.YEAR }));
-      this.extractData(this.apiData.values);
-    });
+    this.store.dispatch(
+      Actions.loadTempValuesMonth({ year: year, month: month })
+    );
+    this.store.dispatch(Actions.setScope({ scope: Constants.DAYS }));
   }
 
   selectData(e: any) {
-    var stationId: string | undefined = this.currentStation?.id;
     var year: number = this.apiData.values[e.element.index].year;
     var month: number = this.apiData.values[e.element.index].month;
 
@@ -316,22 +294,19 @@ export class TempChartComponent implements OnInit {
       this.selectedCategories = this.selectedCategories.filter(
         (dataLine: DataLine) => !this.meteoCheckboxes.includes(dataLine)
       );
-      this.meteoWerteCheckbox = !this.meteoWerteCheckbox;
 
-      this.apiService.getYear(stationId, year).subscribe((data: any) => {
-        this.apiData.values = data.values;
-        this.store.dispatch(Actions.setScope({ scope: Constants.MONTH }));
-        this.extractData(this.apiData.values);
-      });
+      this.store.dispatch(Actions.loadTempValuesYear({ year: year }));
+      this.store.dispatch(Actions.setScope({ scope: Constants.MONTH }));
+      return;
     }
+
     if (this.currentScope == Constants.MONTH) {
-      this.apiService
-        .getMonth(stationId, year, month)
-        .subscribe((data: any) => {
-          this.apiData.values = data.values;
-          this.store.dispatch(Actions.setScope({ scope: Constants.DAYS }));
-          this.extractData(this.apiData.values);
-        });
+      this.store.dispatch(
+        Actions.loadTempValuesMonth({ year: year, month: month })
+      );
+
+      this.store.dispatch(Actions.setScope({ scope: Constants.DAYS }));
+      return;
     }
   }
 
@@ -355,16 +330,16 @@ export class TempChartComponent implements OnInit {
     }
 
     var data: any[] = [
-      { label: Constants.TMAX, values: new Array<number>() },
-      { label: Constants.TMIN, values: new Array<number>() },
-      { label: Constants.TMINF, values: new Array<number>() },
-      { label: Constants.TMAXF, values: new Array<number>() },
-      { label: Constants.TMINS, values: new Array<number>() },
-      { label: Constants.TMAXS, values: new Array<number>() },
-      { label: Constants.TMINH, values: new Array<number>() },
-      { label: Constants.TMAXH, values: new Array<number>() },
-      { label: Constants.TMINW, values: new Array<number>() },
-      { label: Constants.TMAXW, values: new Array<number>() },
+      { label: Constants.TMAX, values: [] },
+      { label: Constants.TMIN, values: [] },
+      { label: Constants.TMINF, values: [] },
+      { label: Constants.TMAXF, values: [] },
+      { label: Constants.TMINS, values: [] },
+      { label: Constants.TMAXS, values: [] },
+      { label: Constants.TMINH, values: [] },
+      { label: Constants.TMAXH, values: [] },
+      { label: Constants.TMINW, values: [] },
+      { label: Constants.TMAXW, values: [] },
     ];
 
     this.chartData = {

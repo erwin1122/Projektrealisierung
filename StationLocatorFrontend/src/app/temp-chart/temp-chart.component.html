@@ -6,7 +6,12 @@
     padding-bottom: 30px;
   "
 >
-  <h1 style="display: inline-block; cursor: pointer;" (click)="navigateToYears()">Temperaturauswertung</h1>
+  <h1
+    style="display: inline-block; cursor: pointer"
+    (click)="navigateToYears()"
+  >
+    Temperaturauswertung
+  </h1>
   <span>
     <button
       *ngIf="currentScope == year"
