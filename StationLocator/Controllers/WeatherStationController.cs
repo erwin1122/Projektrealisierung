@@ -7,7 +7,6 @@ namespace StationLocator.Controllers
     [ApiController]
     public class WeatherStationController : ControllerBase
     {
-        // GET WeatherStation/
         [HttpGet]
         public StationResponse Get([FromQuery] float latitude, [FromQuery] float longitude, [FromQuery] string? country, [FromQuery] int? startYear, [FromQuery] int? endYear, [FromQuery] int? radius, [FromQuery] int count = 5)
         {
@@ -18,9 +17,10 @@ namespace StationLocator.Controllers
         public async Task<TempValueResponse> GetRange(string id, [FromQuery] int startYear, [FromQuery] int endYear)
         {
             await FileHandler.DownloadStationById(id);
-            List<TempValue> tempValues = CsvHandler.GetStationValuesById(id).Where(value => value.year >= startYear && value.year <= endYear).ToList();
-            
-            return new TempValueResponse() { values = CsvHandler.GetMeanTempYears(tempValues) };
+            List<TempValue> allTempValues = CsvHandler.GetStationValuesById(id).Where(value => value.year >= startYear - 1 && value.year <= endYear).ToList();
+            List<TempValue> tempValues = allTempValues.Where(value => value.year >= startYear && value.year <= endYear).ToList();
+
+            return new TempValueResponse() { values = CsvHandler.GetMeanTempYears(tempValues, allTempValues) };
         }
 
         [HttpGet("/{id}/year")]

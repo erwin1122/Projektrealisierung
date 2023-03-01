@@ -18,7 +18,6 @@ namespace StationLocator
                      .Where(r => r._type == "TMAX" || r._type == "TMIN")
                      .Select(x => new TempValue
                      {
-                         id = id,
                          year = x.year,
                          month = x.month,
                          day = x.day,
@@ -114,7 +113,7 @@ namespace StationLocator
             }
         }
 
-        public static List<TempValue> GetMeanTempYears(List<TempValue> tempValues)
+        public static List<TempValue> GetMeanTempYears(List<TempValue> tempValues, List<TempValue> allTempValues)
         {
             List<TempValue> filteredTemps = new List<TempValue>();
 
@@ -138,11 +137,11 @@ namespace StationLocator
                     scope = "years",
                     maxTemp = CalculateMeanTemp(values, "TMAX"),
                     minTemp = CalculateMeanTemp(values, "TMIN"),
-                    minTempW = CalculateMeanTempSeason(values, "TMIN", "winter"),
+                    minTempW = CalculateMeanTempSeason(values, "TMIN", "winter", allTempValues),
                     minTempF = CalculateMeanTempSeason(values, "TMIN", "spring"),
                     minTempS= CalculateMeanTempSeason(values, "TMIN", "summer"),
                     minTempH= CalculateMeanTempSeason(values, "TMIN", "autumn"),
-                    maxTempW = CalculateMeanTempSeason(values, "TMAX", "winter"),
+                    maxTempW = CalculateMeanTempSeason(values, "TMAX", "winter", allTempValues),
                     maxTempF = CalculateMeanTempSeason(values, "TMAX", "spring"),
                     maxTempS= CalculateMeanTempSeason(values, "TMAX", "summer"),
                     maxTempH= CalculateMeanTempSeason(values, "TMAX", "autumn")
@@ -194,7 +193,7 @@ namespace StationLocator
             };
         }
 
-        private static float? CalculateMeanTempSeason(List<TempValue>? records, string type, string season)
+        private static float? CalculateMeanTempSeason(List<TempValue>? records, string type, string season, List<TempValue>? allTempValues = null)
         {
             if (records == null) { return null; }
 
@@ -205,7 +204,7 @@ namespace StationLocator
                 "spring" => recordsOfType.Where(x => x.month >= 3 && x.month <= 5),
                 "summer" => recordsOfType.Where(x => x.month >= 6 && x.month <= 8),
                 "autumn" => recordsOfType.Where(x => x.month >= 9 && x.month <= 11),
-                "winter" => GetWinterMonths(recordsOfType.ToList()),
+                "winter" => GetWinterMonths(recordsOfType.Where(x => x.month == 1 || x.month == 2).ToList(), allTempValues),
                 _ => new List<TempValue>()
             };
 
@@ -230,12 +229,13 @@ namespace StationLocator
             return validValues.Sum() / count;
         }
 
-        private static IEnumerable<TempValue> GetWinterMonths(List<TempValue> records)
+        private static IEnumerable<TempValue> GetWinterMonths(List<TempValue> records, List<TempValue>? allTempValues)
         {
-            int? year = records[0].year;
-            string? stationId = records[0].id;
+            if (records.Count == 0 || allTempValues == null) { return records; }
 
-            var lastYearRecords = GetStationValuesById(stationId)
+            int? year = records[0].year;
+
+            var lastYearRecords = allTempValues
                 .Where(value => value.year == year - 1 && value.month == 12)
                 .ToList();
 

@@ -8,7 +8,7 @@ namespace StationLocator.Models
         public string? _date { get; set; }
 
         [Index(2)]
-        public string _type { get; set; }
+        public string? _type { get; set; }
 
         [Index(3)]
         public float _value { get; set; }
@@ -50,5 +50,11 @@ namespace StationLocator.Models
 
         [Ignore]
         public string? scope { get; set; }
+
+        [Ignore]
+        public DateTime? date
+        {
+            get { if (_date == null) { return null; } else return new DateTime(int.Parse(_date.Substring(0, 4)), int.Parse(_date.Substring(4, 2)), int.Parse(_date.Substring(6, 2))); }
+            set { }
     }
 }

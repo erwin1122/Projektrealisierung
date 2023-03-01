@@ -4,7 +4,6 @@ namespace StationLocator.Models
 {
     public class TempValue
     {
-        public string? id { get; set; }
         public int? year { get; set; }
         public int? month { get; set; }
         public int? day { get; set; }

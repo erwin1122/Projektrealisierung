@@ -76,7 +76,7 @@ namespace StationLocator
 
             foreach (string line in stations)
             {
-                List<string> cleanStrings = new List<string>();
+                List<string?> cleanStrings = new List<string?>();
                 List<string> numbers = Regex.Matches(line, "[-+]?[0-9]+\\.[0-9]+").Cast<Match>().Select(match => match.Value).ToList();
 
                 cleanStrings.Add(line.Substring(0, 11));
@@ -85,7 +85,7 @@ namespace StationLocator
                 cleanStrings.Add(numbers[2]);
                 cleanStrings.Add(Regex.Match(line.Substring(line.LastIndexOf(".") + 5), @"((?!\s{2}).)+").Value.Trim());
 
-                if(inventoryById.TryGetValue(line.Substring(0, 11), out string inventory))
+                if(inventoryById.TryGetValue(line.Substring(0, 11), out string? inventory))
                 {
                     string[] years = Regex.Matches(inventory, "(\\d{4})\\s(\\d{4})").Cast<Match>().Select(match => match.Value).ToList()[0].Split(" ");
                     cleanStrings.Add(years[0]);
