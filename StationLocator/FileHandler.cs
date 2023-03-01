@@ -29,7 +29,7 @@ namespace StationLocator
             string[] files = Directory.GetFiles(_stationFolder);
             var filesToDelete = files.Where(f => !Path.GetFileName(f).EndsWith($"{DateTime.Now.ToString("yyyy-MM-dd")}.csv"));
 
-            foreach ( var file in filesToDelete)
+            foreach (var file in filesToDelete)
             {
                 File.Delete(file);
             }
@@ -39,13 +39,24 @@ namespace StationLocator
 
         public static async void DownloadStationInventory()
         {
-            using var client = new HttpClient();
-            var response = await client.GetAsync("https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt");
-            SaveFile(response, "ghcnd-stations.txt");
-            var response2 = await client.GetAsync("https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-inventory.txt");
-            SaveFile(response2, "ghcnd-inventory.txt");
+            try
+            {
+                if (!Directory.Exists(Path.GetRelativePath(Directory.GetCurrentDirectory(), "Files/")))
+                {
+                    Directory.CreateDirectory(Path.GetRelativePath(Directory.GetCurrentDirectory(), "Files/"));
+                    Directory.CreateDirectory(Path.GetRelativePath(Directory.GetCurrentDirectory(), "Files/Stations/"));
+                }
 
-            CleanUpStationsFile();
+                using var client = new HttpClient();
+                var response = await client.GetAsync("https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt");
+                SaveFile(response, "ghcnd-stations.txt");
+                var response2 = await client.GetAsync("https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-inventory.txt");
+                SaveFile(response2, "ghcnd-inventory.txt");
+
+                File.Delete(Path.GetRelativePath(Directory.GetCurrentDirectory(), "Files/ghcnd-stations.csv"));
+                CleanUpStationsFile();
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message); }
         }
 
         private static async void SaveFile(HttpResponseMessage response, string filename)
@@ -85,17 +96,18 @@ namespace StationLocator
                 cleanStrings.Add(numbers[2]);
                 cleanStrings.Add(Regex.Match(line.Substring(line.LastIndexOf(".") + 5), @"((?!\s{2}).)+").Value.Trim());
 
-                if(inventoryById.TryGetValue(line.Substring(0, 11), out string? inventory))
+                if (inventoryById.TryGetValue(line.Substring(0, 11), out string? inventory))
                 {
                     string[] years = Regex.Matches(inventory, "(\\d{4})\\s(\\d{4})").Cast<Match>().Select(match => match.Value).ToList()[0].Split(" ");
                     cleanStrings.Add(years[0]);
                     cleanStrings.Add(years[1]);
-                } else
+                }
+                else
                 {
                     cleanStrings.Add(null);
                     cleanStrings.Add(null);
                 }
-                
+
                 cleanedLines.Add(string.Join(";;", cleanStrings));
             }
 

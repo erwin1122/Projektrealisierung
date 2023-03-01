@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CsvHelper.Configuration;
+using CsvHelper;
+using Microsoft.AspNetCore.Mvc;
 using StationLocator.Models;
+using System.Globalization;
+using System.IO;
 
 namespace StationLocator.Controllers
 {
@@ -17,8 +21,8 @@ namespace StationLocator.Controllers
         public async Task<TempValueResponse> GetRange(string id, [FromQuery] int startYear, [FromQuery] int endYear)
         {
             await FileHandler.DownloadStationById(id);
-            List<TempValue> allTempValues = CsvHandler.GetStationValuesById(id).Where(value => value.date.Year >= startYear - 1 && value.date.Year <= endYear).ToList();
-            List<TempValue> tempValues = allTempValues.Where(value => value.date.Year >= startYear && value.date.Year <= endYear).ToList();
+            List<TempValue> allTempValues = CsvHandler.GetStationValuesById(id).Where(value => value.year >= startYear - 1 && value.year <= endYear).ToList();
+            List<TempValue> tempValues = allTempValues.Where(value => value.year >= startYear && value.year <= endYear).ToList();
 
             return new TempValueResponse() { values = CsvHandler.GetMeanTempYears(tempValues, allTempValues) };
         }
@@ -27,7 +31,7 @@ namespace StationLocator.Controllers
         public async Task<TempValueResponse> GetYear(string id, [FromQuery] int year)
         {
             await FileHandler.DownloadStationById(id);
-            List<TempValue> tempValues = CsvHandler.GetStationValuesById(id).Where(value => value.date.Year == year).ToList();
+            List<TempValue> tempValues = CsvHandler.GetStationValuesById(id).Where(value => value.year == year).ToList();
 
             return new TempValueResponse() { values = CsvHandler.GetMeanTempMonths(tempValues) };
         }
@@ -36,21 +40,21 @@ namespace StationLocator.Controllers
         public async Task<TempValueResponse> GetMonth(string id, [FromQuery] int year, [FromQuery] int month)
         {
             await FileHandler.DownloadStationById(id);
-            List<TempValue> tempValues = CsvHandler.GetStationValuesById(id).Where(value => value.date.Year == year && value.date.Month == month).ToList();
+            List<TempValue> tempValues = CsvHandler.GetStationValuesById(id).Where(value => value.year == year && value.month == month).ToList();
 
             List<TempValue> filteredValues = new List<TempValue>();
 
             foreach (TempValue tempValue in tempValues)
             {
-                var alreadyInList = filteredValues.FindIndex(x => x.date.Day == tempValue.date.Day);
+                var alreadyInList = filteredValues.FindIndex(x => x.day == tempValue.day);
 
                 if (alreadyInList != -1)
                 {
-                    if(tempValue.minTemp != null)
+                    if (tempValue.minTemp != null)
                     {
                         tempValues[alreadyInList].minTemp = tempValue.minTemp;
                     }
-                    if(tempValue.maxTemp != null)
+                    if (tempValue.maxTemp != null)
                     {
                         tempValues[alreadyInList].maxTemp = tempValue.maxTemp;
                     }

@@ -11,7 +11,7 @@ import { Station } from 'src/models/station';
 
 @Injectable()
 export class StateEffects {
-  private baseURL = 'https://localhost:5001/';
+  private baseURL = 'https://stationlocator20230220221216.azurewebsites.net/';
 
   private startYear: number = 0;
   private endYear: number = 20000;
