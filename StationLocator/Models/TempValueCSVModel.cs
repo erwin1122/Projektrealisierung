@@ -5,34 +5,13 @@ namespace StationLocator.Models
     public class TempValueCSV
     {
         [Index(1)]
-        public string? _date { get; set; }
+        public string _date { get; set; }
 
         [Index(2)]
         public string? _type { get; set; }
 
         [Index(3)]
         public float _value { get; set; }
-
-        [Ignore]
-        public int? year
-        {
-            get { if (_date == null) { return null; } else return int.Parse(_date.Substring(0, 4)); }
-            set { }
-        }
-
-        [Ignore]
-        public int? month
-        {
-            get { if (_date == null) { return null; } else return int.Parse(_date.Substring(4, 2)); }
-            set { }
-        }
-
-        [Ignore]
-        public int? day
-        {
-            get { if (_date == null) { return null; } else return int.Parse(_date.Substring(6, 2)); }
-            set { }
-        }
 
         [Ignore]
         public float? minTemp
@@ -52,9 +31,10 @@ namespace StationLocator.Models
         public string? scope { get; set; }
 
         [Ignore]
-        public DateTime? date
+        public DateTime date
         {
-            get { if (_date == null) { return null; } else return new DateTime(int.Parse(_date.Substring(0, 4)), int.Parse(_date.Substring(4, 2)), int.Parse(_date.Substring(6, 2))); }
+            get { return new DateTime(int.Parse(_date.Substring(0, 4)), int.Parse(_date.Substring(4, 2)), int.Parse(_date.Substring(6, 2))); }
             set { }
+        }
     }
 }

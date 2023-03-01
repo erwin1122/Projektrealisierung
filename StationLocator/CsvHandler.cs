@@ -18,9 +18,7 @@ namespace StationLocator
                      .Where(r => r._type == "TMAX" || r._type == "TMIN")
                      .Select(x => new TempValue
                      {
-                         year = x.year,
-                         month = x.month,
-                         day = x.day,
+                         date = x.date,
                          maxTemp = x.maxTemp,
                          minTemp = x.minTemp,
                          _type = x._type
@@ -117,9 +115,9 @@ namespace StationLocator
         {
             List<TempValue> filteredTemps = new List<TempValue>();
 
-            IEnumerable<IGrouping<int?, TempValue>> yearGrouping = tempValues.OrderBy(value => value.year).GroupBy(value => value.year);
+            IEnumerable<IGrouping<int, TempValue>> yearGrouping = tempValues.OrderBy(value => value.date.Year).GroupBy(value => value.date.Year);
 
-            foreach (IGrouping<int?, TempValue> year in yearGrouping)
+            foreach (IGrouping<int, TempValue> year in yearGrouping)
             {
 
                 List<TempValue> values = new List<TempValue>();
@@ -131,9 +129,7 @@ namespace StationLocator
 
                 filteredTemps.Add(new TempValue()
                 {
-                    year = year.Key,
-                    month = 0,
-                    day = 0,
+                    date = new DateTime(year: year.Key, month: 1, day: 1),
                     scope = "years",
                     maxTemp = CalculateMeanTemp(values, "TMAX"),
                     minTemp = CalculateMeanTemp(values, "TMIN"),
@@ -153,9 +149,9 @@ namespace StationLocator
         public static List<TempValue> GetMeanTempMonths(List<TempValue> tempValues) { 
             List<TempValue> filteredTemps = new List<TempValue>();
 
-            IEnumerable<IGrouping<int?, TempValue>> monthGrouping = tempValues.OrderBy(value => value.month).GroupBy(value => value.month);
+            IEnumerable<IGrouping<int, TempValue>> monthGrouping = tempValues.OrderBy(value => value.date.Month).GroupBy(value => value.date.Month);
 
-            foreach (IGrouping<int?, TempValue> month in monthGrouping)
+            foreach (IGrouping<int, TempValue> month in monthGrouping)
             {
 
                 List<TempValue> values = new List<TempValue>();
@@ -167,9 +163,7 @@ namespace StationLocator
 
                 TempValue test = new TempValue()
                 {
-                    year = values[0].year,
-                    month = month.Key,
-                    day = 0,
+                    date = new DateTime(values[0].date.Year, month.Key, 1),
                     scope = "months",
                     maxTemp = CalculateMeanTemp(values, "TMAX"),
                     minTemp = CalculateMeanTemp(values, "TMIN")
@@ -201,10 +195,10 @@ namespace StationLocator
 
             recordsOfType = season switch
             {
-                "spring" => recordsOfType.Where(x => x.month >= 3 && x.month <= 5),
-                "summer" => recordsOfType.Where(x => x.month >= 6 && x.month <= 8),
-                "autumn" => recordsOfType.Where(x => x.month >= 9 && x.month <= 11),
-                "winter" => GetWinterMonths(recordsOfType.Where(x => x.month == 1 || x.month == 2).ToList(), allTempValues),
+                "spring" => recordsOfType.Where(x => x.date.Month >= 3 && x.date.Month <= 5),
+                "summer" => recordsOfType.Where(x => x.date.Month >= 6 && x.date.Month <= 8),
+                "autumn" => recordsOfType.Where(x => x.date.Month >= 9 && x.date.Month <= 11),
+                "winter" => GetWinterMonths(recordsOfType.Where(x => x.date.Month == 1 || x.date.Month == 2).ToList(), allTempValues),
                 _ => new List<TempValue>()
             };
 
@@ -233,15 +227,15 @@ namespace StationLocator
         {
             if (records.Count == 0 || allTempValues == null) { return records; }
 
-            int? year = records[0].year;
+            int? year = records[0].date.Year;
 
             var lastYearRecords = allTempValues
-                .Where(value => value.year == year - 1 && value.month == 12)
+                .Where(value => value.date.Year == year - 1 && value.date.Month == 12)
                 .ToList();
 
             records.AddRange(lastYearRecords);
 
-            return records.Where(x => x.month == 12 || x.month == 1 || x.month == 2);
+            return records.Where(x => x.date.Month == 12 || x.date.Month == 1 || x.date.Month == 2);
         }
     }
 }
