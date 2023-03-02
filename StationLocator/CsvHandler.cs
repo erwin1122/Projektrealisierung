@@ -67,12 +67,12 @@ namespace StationLocator
         {
             if (startYear != null && endYear != null)
             {
-                return station.startYear <= startYear && station.endYear >= endYear;
+                return station.startYear <= startYear && station.endYear >= endYear && station.endYear >= startYear;
             }
 
             if (startYear != null)
             {
-                return station.startYear <= startYear;
+                return station.startYear <= startYear && station.endYear >= startYear;
             }
 
             if (endYear != null)
