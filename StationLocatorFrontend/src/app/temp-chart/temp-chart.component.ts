@@ -165,7 +165,9 @@ export class TempChartComponent implements OnInit {
       .select((state) => state.state.currentFocus.station)
       .subscribe((station) => {
         this.currentStation = station;
-        this.navigateToYears();
+        if (Object.keys(station).length != 0) {
+          this.navigateToYears();
+        }
       });
 
     this.store
