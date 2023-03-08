@@ -24,7 +24,7 @@ namespace StationLocator.Controllers
             List<TempValue> allTempValues = CsvHandler.GetStationValuesById(id).Where(value => value.year >= startYear - 1 && value.year <= endYear).ToList();
             List<TempValue> tempValues = allTempValues.Where(value => value.year >= startYear && value.year <= endYear).ToList();
 
-            return new TempValueResponse() { values = CsvHandler.GetMeanTempYears(tempValues, allTempValues) };
+            return new TempValueResponse() { values = CsvHandler.GetMeanTempYears(tempValues, allTempValues).OrderBy(x => x.year).ToList() };
         }
 
         [HttpGet("/{id}/year")]
@@ -33,7 +33,7 @@ namespace StationLocator.Controllers
             await FileHandler.DownloadStationById(id);
             List<TempValue> tempValues = CsvHandler.GetStationValuesById(id).Where(value => value.year == year).ToList();
 
-            return new TempValueResponse() { values = CsvHandler.GetMeanTempMonths(tempValues) };
+            return new TempValueResponse() { values = CsvHandler.GetMeanTempMonths(tempValues).OrderBy(x => x.month).ToList() };
         }
 
         [HttpGet("/{id}/month")]
@@ -65,7 +65,7 @@ namespace StationLocator.Controllers
                 }
             }
 
-            return new TempValueResponse() { values = filteredValues };
+            return new TempValueResponse() { values = filteredValues.OrderBy(x => x.day).ToList() };
         }
     }
 }
